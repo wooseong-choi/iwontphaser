@@ -10,7 +10,9 @@ class Character extends Phaser.Scene{
     {
         this.load.atlas('player', './reddude.png', './move.json');
         this.load.atlas('background', './gfx/Overworld.png', './world.json'); // Load your tileset image and JSON
-    }
+
+        this.load.image('obstacle', './gfx/7.png');
+      }
   
     create ()
     { 
@@ -69,16 +71,32 @@ class Character extends Phaser.Scene{
           repeat: -1
         };
   
-  
+        
+        
+        
+        
         this.anims.create(playerWorkDConfig);
         this.anims.create(playerWorkLConfig);
         this.anims.create(playerWorkRConfig);
         this.anims.create(playerWorkUConfig);
-  
+        
         this.player = this.physics.add.sprite(64 , 64, 'player').play('walk_down');
         this.player.setCollideWorldBounds(true);
         this.player.body.setSize(64,64,true);
-  
+        
+        // 장애물 생성
+        this.obstacles = this.physics.add.group({
+          key: 'obstacle',
+          // repeat: 5,
+          setScale : {x:0.1, y:0.1 },
+          setXY: { x: 400, y: 300, stepX: 1 },
+        });
+
+        // this.obstacles.setCollideWorldBounds(true);
+
+        // 장애물과 플레이어의 충돌 설정
+        this.physics.add.collider(this.player, this.obstacles, this.handleCollision, null, this);
+
         this.cursors = this.input.keyboard.createCursorKeys();
     }
   
@@ -115,8 +133,18 @@ class Character extends Phaser.Scene{
         this.player.setVelocityY(0);
         this.player.anims.pause();
       }
-  
+      
+
+
     }
+
+    handleCollision(player, obstacle) {
+      // 충돌 시 실행할 코드
+      // obstacle.x= 400; 
+      // obstacle.y= 300; 
+      console.log('플레이어와 장애물이 충돌했습니다!');
+    }
+
   }
 
 export default Character;
