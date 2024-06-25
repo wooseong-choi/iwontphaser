@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Player from "./character/Player.ts";
-import Scroll from "./scroll/scrollEventHandler.ts"
+import Scroll from "./scroll/scrollEventHandler.ts";
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -20,26 +20,28 @@ class GameScene extends Phaser.Scene {
     this.load.atlas("background", "./gfx/Overworld.png", "./world.json"); // Load your tileset image and JSON
     this.load.image("obstacle", "./gfx/7.png");
 
-    // 맵인데 이것도 나중에 바꿀거 
-    this.load.image('map', 'https://labs.phaser.io/assets/tests/camera/earthbound-scarab.png');
+    // 맵인데 이것도 나중에 바꿀거
+    this.load.image(
+      "map",
+      "https://labs.phaser.io/assets/tests/camera/earthbound-scarab.png"
+    );
   }
 
   create() {
     // Create a static group for the tiles
-    // const tiles = this.physics.add.staticGroup();
+    const tiles = this.physics.add.staticGroup();
 
     // Add tiles from the tileset
-    // for (let i = 0; i < this.Map_Height; i += this.Tile_Height) {
-    //   for (let j = 0; j < this.Map_Width; j += this.Tile_Width) {
-    //     tiles.create(i, j, "background", "tile_0");
-    //   }
-    // }
-    
-    this.add.image(0, 0, 'map').setOrigin(0);
+    for (let i = 0; i < this.Map_Height; i += this.Tile_Height) {
+      for (let j = 0; j < this.Map_Width; j += this.Tile_Width) {
+        tiles.create(i, j, "background", "tile_0");
+      }
+    }
 
+    // this.add.image(0, 0, 'map').setOrigin(0);
 
     this.player = this.Player.Create(64, 64);
-    this.scoll.create(this, 1024,2048);
+    this.scoll.create(this, 1024, 2048);
 
     // 장애물 생성
     this.obstacles = this.physics.add.group({

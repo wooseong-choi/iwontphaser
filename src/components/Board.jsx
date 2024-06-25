@@ -1,34 +1,44 @@
 import React from "react";
-import "./../static/global.scss";
-import "./../index.css";
-const Root = ({}) => {
-  React.useEffect(() => {
-    // Initialize the code
-    return () => {};
-  }, []);
+import "./board.css";
+
+const App = () => {
   return (
-    <div className={"main"}>
-      <div className={"frame-23"}>
-        <svg id="7:01550" className={"frame-3"}></svg>
-        <svg id="7:01568" className={"frame-4"}></svg>
-        <svg id="7:01546" className={"frame-5"}></svg>
-        <div className={"frame-6"}>
-          <svg id="7:01567" className={"path-3"}></svg>
-          <div className={"text---"}>류 강 현</div>
-          <div className={"text-"}>활동중</div>
-          <svg id="7:01562" className={"ellipse-1"}></svg>
+    <div className="navbar">
+      <div className="left-section">
+        <div className="user-info">
+          <img src="user-icon.png" alt="User Icon" className="user-icon" />
+          <span className="username">류강현</span>
+          <span className="status">활동중</span>
         </div>
-        <svg id="7:01548" className={"frame-7"}></svg>
-        <svg id="7:01552" className={"frame-8"}></svg>
-        <svg id="7:01544" className={"frame-9"}></svg>
-        <svg id="7:01554" className={"frame-10"}></svg>
-        <div className={"frame-2"}>
-          <svg id="7:01572" className={"path-8"}></svg>
-          <svg id="7:01577" className={"ellipse-2"}></svg>
-          <div className={"text-23"}>23</div>
-        </div>
+      </div>
+      <div className="center-section">
+        <button className="nav-button">
+          <img src="microphone-icon.png" alt="Microphone" />
+        </button>
+        <button className="nav-button">
+          <img src="video-icon.png" alt="Video" />
+        </button>
+        <button className="nav-button">
+          <img src="settings-icon.png" alt="Settings" />
+        </button>
+      </div>
+      <div className="right-section">
+        <button className="nav-button">
+          <img src="bell-icon.png" alt="Bell" />
+        </button>
+        <button className="nav-button">
+          <img src="calendar-icon.png" alt="Calendar" />
+        </button>
+        <button className="nav-button">
+          <img src="chat-icon.png" alt="Chat" />
+        </button>
+        <button className="nav-button">
+          <img src="group-icon.png" alt="Group" />
+        </button>
+        <div className="notification-count">23</div>
       </div>
     </div>
   );
 };
-export default Root;
+
+export default App;

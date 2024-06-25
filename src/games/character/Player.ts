@@ -30,6 +30,12 @@ class Player implements iChara {
   height: number;
   speed: number;
 
+  /**
+   * constructor of class Player
+   * @param obj Game Object of Phaser
+   * @param width of player Image width
+   * @param height of player Image height
+   */
   constructor(obj: globalThis.Phaser.Scene, width: number, height: number) {
     this.obj = obj;
     this.width = width;
@@ -37,6 +43,12 @@ class Player implements iChara {
     this.speed = 160;
   }
 
+  /**
+   * Preload
+   * @param key object name to register on Phaser Game Object
+   * @param url img source(url or file path)
+   * @param xhrSettings meta data of img(frames...) or null
+   */
   Preload(
     key: string,
     url?: string,
@@ -46,7 +58,7 @@ class Player implements iChara {
   }
 
   /**
-   *
+   * Creating Imgs, Anims, Colliders. it returns Object of player.
    * @param x x position of player
    * @param y y positioin of player
    * @returns object of player
@@ -108,6 +120,10 @@ class Player implements iChara {
     return this.player;
   }
 
+  /**
+   * Player's Move method along Keyboard Events.
+   * @param cursor Keyboard Events
+   */
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
     const { left, right, up, down } = cursor;
 
