@@ -10,10 +10,18 @@ const config = {
   scene: Character,
   backgroundColor: '#2d2d2d',
   parent: 'phaser-example',
+  pixelArt: true,
   physics: {
       default: 'arcade',
+      matter:{
+        gravity:{
+          x:0,
+          y:100
+        },
+        enableSleeping: true
+      },
       arcade: {
-          gravity: { y: 0 }
+          gravity: { y: 0, x:0 }
       }
   }
 };
