@@ -6,7 +6,7 @@ class GameScene extends Phaser.Scene {
     super();
 
     this.Map_Height = 800;
-    this.Map_Width = 600;
+    this.Map_Width = 608;
     this.Tile_Height = 16;
     this.Tile_Width = 16;
 

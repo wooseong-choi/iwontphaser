@@ -5,7 +5,7 @@ import GameScene from "./GameScene";
 const config = {
   type: Phaser.AUTO,
   width: 800,
-  height: 600,
+  height: 608,
   scene: GameScene,
   backgroundColor: "#2d2d2d",
   parent: "phaser-example",
