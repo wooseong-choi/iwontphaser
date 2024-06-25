@@ -24,16 +24,24 @@ class ScrollHandler {
         
         // 마우스 휠 이벤트 추가
         this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-            const cam = this.scene.cameras.main;  
-            const pointerWorldX = cam.scrollX + pointer.x / cam.zoom;
-            const pointerWorldY = cam.scrollY + pointer.y / cam.zoom;
+            const cam = this.scene.cameras.main; 
+            const oldZoom = cam.zoom;
+            const pointerWorldX = cam.scrollX + pointer.x / oldZoom;
+            const pointerWorldY = cam.scrollY + pointer.y / oldZoom;
 
             // 줌 레벨 변경
-            const newZoom = Phaser.Math.Clamp(cam.zoom - deltaY * 0.001, 0.5, 2); // 줌 레벨을 0.5에서 2 사이로 제한
-            const smoothZoom = Phaser.Math.Linear(cam.zoom, newZoom, 0.1); // 부드럽게 줌 변경
+            const newZoom = Phaser.Math.Clamp(oldZoom - deltaY * 0.001, 0.5, 2); // 줌 레벨을 0.5에서 2 사이로 제한
+            if (newZoom === oldZoom) {
+                return; // 줌 레벨이 변경되지 않았으면 종료
+            }
+            const smoothZoom = Phaser.Math.Linear(oldZoom, newZoom, 0.1); // 부드럽게 줌 변경
+
+            // 줌이 변경된 후의 새로운 카메라 위치 계산
+            const newScrollX = pointerWorldX + pointer.x / smoothZoom;
+            const newScrollY = pointerWorldY + pointer.y / smoothZoom;
 
             cam.setZoom(smoothZoom);
-            cam.centerOn(pointerWorldX, pointerWorldY);
+            cam.centerOn(newScrollX, newScrollY);
         });
 
     }
