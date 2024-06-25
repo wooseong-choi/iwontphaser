@@ -12,11 +12,14 @@ interface iChara {
     url?: string,
     xhrSettings?: Phaser.Types.Loader.XHRSettingsObject
   ): void;
+
   Create(
     x: number,
     y: number
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
+
   Effect(): void;
 }
 
@@ -42,6 +45,12 @@ class Player implements iChara {
     this.obj.load.atlas(key, url, xhrSettings);
   }
 
+  /**
+   *
+   * @param x x position of player
+   * @param y y positioin of player
+   * @returns object of player
+   */
   Create(
     x: number,
     y: number
