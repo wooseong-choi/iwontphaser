@@ -4,6 +4,10 @@ body {
   font-family: Arial, sans-serif;
 }
 
+#canvas-parent{
+  display: flex;
+}
+
 .navbar {
   position: fixed;
   bottom: 0;
@@ -21,10 +25,24 @@ body {
   display: flex;
   align-items: center;
 }
+.center-section{
+  margin-left: 10px;
+}
+.right-section{ 
+  margin-right: 10px;
+}
 
 .user-info {
   display: flex;
   align-items: center;
+  min-width: 160px;
+  border-radius: 1em;
+  border: 1px solid #4caf50;
+  background-color: #fff;
+  justify-content: center;
+  height: 55px;
+  position: relative;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
 .user-icon {
@@ -37,18 +55,42 @@ body {
 .username {
   font-weight: bold;
   margin-right: 5px;
+  align-self: flex-start;
+  line-height: 40px;
 }
 
 .status {
   color: #888;
+  position: absolute;
+  font-size: 10px;
+  bottom: 10px;
+  right: calc(50% - 37.5px);
+}
+.status-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 42px;
+  font-size: 10px;
+  background-color: #f44336;
+  top: 10px;
+  right: 15px;
+}
+.status-dot.on {
+  background-color: #6FC45C;
 }
 
 .nav-button {
   background: none;
-  border: none;
   margin: 0 5px;
   padding: 10px;
   cursor: pointer;
+  border-radius: 20px;
+  border: 1px solid #4caf50;
+  background-color: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.3);
+  display: flex;
+  position: relative;
 }
 
 .nav-button img {
