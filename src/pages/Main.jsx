@@ -1,5 +1,5 @@
 // src/pages/Main.jsx
-import React, { useState } from "react";
+import React from "react";
 import GameApp from "../games/GameApp";
 import Board from "../components/Board";
 

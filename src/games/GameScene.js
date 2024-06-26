@@ -6,8 +6,8 @@ class GameScene extends Phaser.Scene {
   constructor() {
     super();
 
-    this.Map_Height = 800;
-    this.Map_Width = 608;
+    this.Map_Height = window.innerHeight;
+    this.Map_Width = window.innerWidth;
     this.Tile_Height = 16;
     this.Tile_Width = 16;
 
@@ -30,10 +30,10 @@ class GameScene extends Phaser.Scene {
   create() {
     // Create a static group for the tiles
     const tiles = this.physics.add.staticGroup();
-
+    console.log(this.Map_Height, this.Map_Width);
     // Add tiles from the tileset
-    for (let i = 0; i < this.Map_Height; i += this.Tile_Height) {
-      for (let j = 0; j < this.Map_Width; j += this.Tile_Width) {
+    for (let i = 0; i < this.Map_Width; i += this.Tile_Width) {
+      for (let j = 0; j < this.Map_Height; j += this.Tile_Height) {
         tiles.create(i, j, "background", "tile_0");
       }
     }
@@ -71,8 +71,6 @@ class GameScene extends Phaser.Scene {
 
   handleCollision(player, obstacle) {
     // 충돌 시 실행할 코드
-    // obstacle.x= 400;
-    // obstacle.y= 300;
     console.log("플레이어와 장애물이 충돌했습니다!");
   }
 }
