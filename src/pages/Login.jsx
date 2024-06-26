@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TextAnimation from "../components/TextAnimation";
 import ModalLogin from "../components/ModalLogin";
-import ModalLoginGPT from "../components/ModalLoginGPT";
 import "../static/css/Login.css";
 import Header from "../components/Header";
 
@@ -39,7 +38,6 @@ const Login = () => {
           >
             Join to the World!
           </button>
-          <ModalLoginGPT />
           <ModalLogin isOpen={isOpen} onClose={() => setIsOpen(false)} />
         </div>
       </div>
