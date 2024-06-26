@@ -1,14 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import GameScene from "./GameScene";
 
+
 const config = {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   width: 800,
   height: 600,
   scene: GameScene,
   backgroundColor: "#2d2d2d",
-  parent: "phaser-example",
+  parent: "canvas-parent",
+  // canvas : canvasRef.current,
   pixelArt: true,
   physics: {
     default: "arcade",
@@ -25,22 +27,31 @@ const config = {
     },
   },
 };
-
 const GameApp = () => {
+  const canvasRef = useRef(null);
   useEffect(() => {
     // Phaser.Game 인스턴스가 여러 번 생성되지 않도록 확인
     if (!window.game) {
       window.game = new Phaser.Game(config);
     }
-
+    console.log('마운트');
     // 컴포넌트 언마운트 시 Phaser 게임 정리
     return () => {
+      console.log('언마운트');
       if (window.game) {
         window.game.destroy(true);
         window.game = null;
       }
     };
   }, []);
-  return <></>;
+  return (
+      <div id="GameApp" className="flex">
+        <div id="canvas-parent" className="flex main">
+          <canvas ref={canvasRef}></canvas>
+          <div></div>  
+        </div>
+        <div className="flex bottom"></div>        
+      </div>
+  );
 };
 export default GameApp;
