@@ -5,6 +5,7 @@ import GameApp from "./games/GameApp";
 import NotFound from "./pages/NotFound";
 import Board from "./components/Bottom.jsx";
 import Main from "./pages/Main.jsx";
+import "./static/css/App.css";
 
 function App() {
   return (

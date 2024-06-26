@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "gsap": "^3.12.5",
     "phaser": "^3.80.1",
     "phaser3-rex-plugins": "^1.80.4",
     "pixi.js": "^8.2.0",
