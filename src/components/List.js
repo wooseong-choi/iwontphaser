@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import "./list.css";
 
 // 이걸로 유저목록 만들어서 포문돌릴것
@@ -5,18 +6,80 @@ function getConnectedUser(){
     
 }
 
-const List = ()=>{
+const List = ({ isOpen, setIsOpen, isChatOpen,setIsChatOpen })=>{
     getConnectedUser();
+
+    const toggleMenu = (val,method) => {
+        method(!val);
+    };
     return (
         <>
-            <div className="user-list">
-                <div className="wrap_search">
-                    <input id="csSuggestInputText" type="text" className="" placeholder="Search" value="" />
-                    <button id="csSuggestResetBtn" type="button" className="btn_reset hide"><i class="ico_comm ico_reset">검색어 초기화</i></button>
-                    <button id="csSuggestSearchBtn" type="button" className="btn_search"><i class="ico_comm ico_search">검색</i></button>
+        <div className={`side-menu ${isOpen ? 'open' : ''}`}>
+            <button className="menu-toggle" onClick={()=>{toggleMenu(isOpen,setIsOpen)}}>
+                <img src="svg/exit.svg"/>
+            </button>
+            <div className="searchDivWrap">
+                <div className="searchDiv">
+                    <img src="svg/search-icon.svg" alt="Search Icon" className="search-icon" />
+                    <input placeholder="Search" type='text'/>
                 </div>
+            </div>
+            <nav className="menu-items">
+                <div className="user-info">
+                    <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                    <span className="username">류강현</span>
+                    <span className="status">활동중</span>
+                    <span className="status-dot on"></span>
+                </div>
+                <div className="user-info">
+                    <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                    <span className="username">류강현</span>
+                    <span className="status">활동중</span>
+                    <span className="status-dot on"></span>
+                </div>
+                <div className="user-info">
+                    <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                    <span className="username">류강현</span>
+                    <span className="status">활동중</span>
+                    <span className="status-dot on"></span>
+                </div>
+                <div className="user-info">
+                    <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                    <span className="username">류강현</span>
+                    <span className="status">활동중</span>
+                    <span className="status-dot on"></span>
+                </div>
+            </nav>
+        </div>
+        
+        <div className={`side-menu-chat ${isChatOpen ? 'open' : ''}`}>
+            <button className="menu-toggle" onClick={()=>{toggleMenu(isChatOpen,setIsChatOpen)}}>
+                <img src="svg/exit.svg"/>
+            </button>
+            <div className="chatDivWrap">
+                <div className="chatDiv">
+                    <h1>Chat</h1>
+                </div>
+            </div>
+            <nav className="chat-content">
+                <div className="chat-info">
+                    <span className="chat-name">최우성</span>
+                    <span className="chat-message">안녕하세요</span>
+                </div>
+                <div className="chat-info me">
+                    <span className="chat-name">류강현</span>
+                    <span className="chat-message">안녕하세요</span>
+                </div>
+                <div className="chat-info">
+                    <span className="chat-name">최우성</span>
+                    <span className="chat-message">안녕하세요</span>
+                </div>
+            </nav>
+            <div className='chat-rooms'>
 
             </div>
+        </div>
+
         </>
     );
 }

@@ -10,11 +10,11 @@ const GameApp = () => {
       const config = {
         type: Phaser.CANVAS,
         width: 800,
-        height: 600,
+        height: 600 ,
         scene: GameScene,
         backgroundColor: "#2d2d2d",
-        parent: "canvas-parent",
-        canvas: canvasRef.current,
+        parent: "gameMain",
+        canvas : canvasRef.current,
         pixelArt: true,
         physics: {
           default: "arcade",
