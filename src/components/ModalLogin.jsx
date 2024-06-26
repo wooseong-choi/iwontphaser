@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import "./ModalLogin.css";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
-  console.log("in modal login isOpen:", isOpen);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
