@@ -51,7 +51,7 @@ const List = ({ isOpen, setIsOpen, isChatOpen,setIsChatOpen })=>{
                 </div>
             </nav>
         </div>
-        
+
         <div className={`side-menu-chat ${isChatOpen ? 'open' : ''}`}>
             <button className="menu-toggle" onClick={()=>{toggleMenu(isChatOpen,setIsChatOpen)}}>
                 <img src="svg/exit.svg"/>
@@ -62,17 +62,28 @@ const List = ({ isOpen, setIsOpen, isChatOpen,setIsChatOpen })=>{
                 </div>
             </div>
             <nav className="chat-content">
-                <div className="chat-info">
-                    <span className="chat-name">최우성</span>
-                    <span className="chat-message">안녕하세요</span>
-                </div>
-                <div className="chat-info me">
-                    <span className="chat-name">류강현</span>
-                    <span className="chat-message">안녕하세요</span>
-                </div>
-                <div className="chat-info">
-                    <span className="chat-name">최우성</span>
-                    <span className="chat-message">안녕하세요</span>
+                <div>
+                    <div className="chat-info">
+                        <span className='chat-profile'>
+                            <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                        </span>
+                        <span className="chat-name">최우성</span>
+                        <span className="chat-message">안녕하세요</span>
+                    </div>
+                    <div className="chat-info me">
+                        <span className='chat-profile'>
+                            <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                        </span>
+                        <span className="chat-name">류강현</span>
+                        <span className="chat-message">안녕하세요</span>
+                    </div>
+                    <div className="chat-info">
+                        <span className='chat-profile'>
+                            <img src="svg/user-icon.svg" alt="User Icon" className="user-icon" />
+                        </span>
+                        <span className="chat-name">최우성</span>
+                        <span className="chat-message">안녕하세요</span>
+                    </div>
                 </div>
             </nav>
             <div className='chat-rooms'>
