@@ -7,12 +7,12 @@ class GameScene extends Phaser.Scene {
     super();
 
     this.Map_Height = 800;
-    this.Map_Width = 608;
+    this.Map_Width = 600;
     this.Tile_Height = 16;
     this.Tile_Width = 16;
 
     this.Player = new Player(this, 64, 64);
-    this.scoll = new Scroll(this, 1024, 2048);
+    this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
   }
 
   preload() {
@@ -63,10 +63,19 @@ class GameScene extends Phaser.Scene {
     );
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
   }
 
   update() {
     this.Player.Move(this.cursors);
+
+    // 'Q' 키가 눌렸을 때 실행할 코드
+    if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
+      console.log("'Q' 키가 눌렸습니다!");
+      // 여기에 원하는 코드를 추가하세요.
+      this.Player.moveTo(400, 300);
+      // this.Player.moveToBlock(400, 300);
+    }
   }
 
   handleCollision(player, obstacle) {

@@ -21,13 +21,6 @@ const GameApp = () => {
         pixelArt: true,
         physics: {
           default: "arcade",
-          matter: {
-            gravity: {
-              x: 0,
-              y: 100,
-            },
-            enableSleeping: true,
-          },
           arcade: {
             gravity: { y: 0, x: 0 },
             debug: true,
