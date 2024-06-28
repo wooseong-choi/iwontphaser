@@ -1,11 +1,12 @@
 import Phaser from "phaser";
 
-interface iChara {
+interface iCharaOthers {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   obj: globalThis.Phaser.Scene;
   width: number;
   height: number;
   speed: number;
+  name: string;
   oldPosition: { x: number; y: number };
 
   Preload(
@@ -23,12 +24,13 @@ interface iChara {
   Effect(): void;
 }
 
-class Player implements iChara {
+class Others implements iCharaOthers {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   obj: globalThis.Phaser.Scene;
   width: number;
   height: number;
   speed: number;
+  name: string;
   oldPosition: { x: number; y: number };
 
   /**
@@ -37,7 +39,13 @@ class Player implements iChara {
    * @param width of player Image width
    * @param height of player Image height
    */
-  constructor(obj: globalThis.Phaser.Scene, width: number, height: number) {
+  constructor(
+    obj: globalThis.Phaser.Scene,
+    name: string,
+    width: number,
+    height: number
+  ) {
+    this.name = name;
     this.obj = obj;
     this.width = width;
     this.height = height;
@@ -215,4 +223,4 @@ class Player implements iChara {
   Effect() {}
 }
 
-export default Player;
+export default Others;
