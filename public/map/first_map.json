@@ -1,0 +1,39 @@
+{
+  "compressionlevel": -1,
+  "height": 100,
+  "infinite": false,
+  "layers": [
+    {
+      "compression": "zlib",
+      "data": "eJzt1kEKgkAAhlE9SevW1RWsO1Snqa7geRt3IkMYkf7CWzxGHRgYP9Dp2qY5F5eiW/B631DTezdR9MiiRxY9suiRRY8semTRI8u0x3A/fbZrP+sn1t7Tls3pMdwfyngsTpU1xnN6LNPjWsZbca+sMZ7TY5kejzI+i1dljfGcHsv0mPtv0OP/PX5ZDz22zPcqi/NuFufdLM67Wb79f8yx9p62zPvLokcWPbLokUWPLHpk0SOLHln0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoOYNz9Vziw==",
+      "encoding": "base64",
+      "height": 100,
+      "id": 1,
+      "name": "Tile Layer 1",
+      "offsetx": 22,
+      "offsety": -8.5,
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 100,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 2,
+  "nextobjectid": 1,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.10.2",
+  "tileheight": 16,
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "../Inner.tsx"
+    }
+  ],
+  "tilewidth": 16,
+  "type": "map",
+  "version": "1.10",
+  "width": 100
+}

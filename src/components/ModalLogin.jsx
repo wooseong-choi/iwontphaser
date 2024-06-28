@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import "./ModalLogin.css";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -19,6 +19,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
+    navigate("/main");
   };
 
   if (!isOpen) {

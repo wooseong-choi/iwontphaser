@@ -114,8 +114,8 @@ class Player implements iChara {
     this.obj.anims.create(playerWorkUConfig);
 
     this.player = this.obj.physics.add.sprite(x, y, "player");
-    this.player.setCollideWorldBounds(true);
     this.player.body.setSize(this.width, this.height, true);
+    this.player.setCollideWorldBounds(true);
 
     return this.player;
   }
@@ -133,21 +133,25 @@ class Player implements iChara {
 
     switch (true) {
       case left.isDown:
+        this.player.x -= 16;
         velocityX = -this.speed;
         velocityY = 0;
         animationKey = "walk_left";
         break;
       case right.isDown:
+        this.player.x += 16;
         velocityX = this.speed;
         velocityY = 0;
         animationKey = "walk_right";
         break;
       case up.isDown:
+        this.player.y -= 16;
         velocityY = -this.speed;
         velocityX = 0;
         animationKey = "walk_up";
         break;
       case down.isDown:
+        this.player.y += 16;
         velocityY = this.speed;
         velocityX = 0;
         animationKey = "walk_down";
@@ -155,8 +159,8 @@ class Player implements iChara {
     }
 
     // Set player velocity based on key inputs
-    this.player.setVelocityX(velocityX);
-    this.player.setVelocityY(velocityY);
+    // this.player.setVelocityX(velocityX);
+    // this.player.setVelocityY(velocityY);
 
     // Play animation if key is pressed, otherwise pause
     if (animationKey) {

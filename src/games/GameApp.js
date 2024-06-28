@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import GameScene from "./GameScene";
+import BoardPlugin from "phaser3-rex-plugins/plugins/board-plugin.js";
 
 const GameApp = () => {
   const canvasRef = useRef(null);
@@ -10,11 +11,11 @@ const GameApp = () => {
       const config = {
         type: Phaser.CANVAS,
         width: 800,
-        height: 600 ,
+        height: 600,
         scene: GameScene,
         backgroundColor: "#2d2d2d",
         parent: "gameMain",
-        canvas : canvasRef.current,
+        canvas: canvasRef.current,
         pixelArt: true,
         physics: {
           default: "arcade",
@@ -27,16 +28,24 @@ const GameApp = () => {
           },
           arcade: {
             gravity: { y: 0, x: 0 },
-            // debug: true,
+            debug: true,
           },
+        },
+        plugins: {
+          scene: [
+            {
+              key: "rexBoard",
+              plugin: BoardPlugin,
+              mapping: "rexBoard",
+            },
+          ],
         },
       };
       window.game = new Phaser.Game(config);
     }
-    console.log("마운트");
+
     // 컴포넌트 언마운트 시 Phaser 게임 정리
     return () => {
-      console.log("언마운트");
       if (window.game) {
         // window.game.destroy(true);
         // window.game = null;

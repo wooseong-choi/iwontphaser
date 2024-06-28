@@ -15,7 +15,7 @@
 
 .modal {
   width: 400px;
-  height: 300px;
+  height: auto;
   background-color: #ffffff;
   border-radius: 12px;
   overflow: hidden;
