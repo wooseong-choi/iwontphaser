@@ -1,11 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import GameScene from "./GameScene";
 import BoardPlugin from "phaser3-rex-plugins/plugins/board-plugin.js";
 
 const GameApp = () => {
   const canvasRef = useRef(null);
+  
   useEffect(() => {
+
     // Phaser.Game 인스턴스가 여러 번 생성되지 않도록 확인
     if (!window.game) {
       const config = {
@@ -19,13 +21,6 @@ const GameApp = () => {
         pixelArt: true,
         physics: {
           default: "arcade",
-          matter: {
-            gravity: {
-              x: 0,
-              y: 100,
-            },
-            enableSleeping: true,
-          },
           arcade: {
             gravity: { y: 0, x: 0 },
             debug: true,
@@ -51,6 +46,7 @@ const GameApp = () => {
         // window.game = null;
       }
     };
+  
   }, []);
   return <canvas ref={canvasRef} style={{ zIndex: 1 }}></canvas>;
 };

@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import {Socket} from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 interface iChara {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -6,6 +8,7 @@ interface iChara {
   width: number;
   height: number;
   speed: number;
+  oldPosition: { x: number, y: number };
 
   Preload(
     key: string,
@@ -19,7 +22,6 @@ interface iChara {
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
-
   Effect(): void;
 }
 
@@ -29,6 +31,7 @@ class Player implements iChara {
   width: number;
   height: number;
   speed: number;
+  oldPosition: { x: number; y: number };
 
   /**
    * constructor of class Player
@@ -41,6 +44,7 @@ class Player implements iChara {
     this.width = width;
     this.height = height;
     this.speed = 160;
+    this.oldPosition = { x: 1, y: 1 };
   }
 
   /**
@@ -127,10 +131,12 @@ class Player implements iChara {
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
     const { left, right, up, down } = cursor;
 
+    this.oldPosition = { x: this.player.x, y: this.player.y };
+    
     let velocityX = 0;
     let velocityY = 0;
     let animationKey: string | null = null;
-
+    
     switch (true) {
       case left.isDown:
         this.player.x -= 16;
@@ -168,6 +174,44 @@ class Player implements iChara {
     } else {
       this.player.anims.pause();
     }
+  }
+
+  /**
+   * Move the player to a specific coordinate.
+   * @param x The x-coordinate to move to.
+   * @param y The y-coordinate to move to.
+   */
+  async moveTo(x: number, y: number) {
+    // Calculate the distance to the target
+    console.log(x, y);
+    const dx = x - this.player.x;
+    const dy = y - this.player.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Calculate the duration for the tween based on the distance to the target
+    const duration = distance / this.speed * 1000; // speed is in pixels per second, so multiply by 1000 to get duration in milliseconds
+
+    // Create a tween that updates the player's position
+    this.obj.tweens.add({
+      targets: this.player,
+      x: x,
+      y: y,
+      duration: duration,
+      ease: 'Linear'
+    });
+  }
+
+  // 플레이어의 위치를 블록 단위로 움직이게 하는 메서드
+  moveToBlock(x: number, y: number) {
+    // 블록 크기 정의
+    const BLOCK_SIZE = 32;
+    // 블록 단위로 반올림
+    const targetX = Math.round(x / BLOCK_SIZE) * BLOCK_SIZE;
+    const targetY = Math.round(y / BLOCK_SIZE) * BLOCK_SIZE;
+
+    // 플레이어의 위치를 블록 단위로 업데이트
+    this.player.x = targetX;
+    this.player.y = targetY;
   }
 
   Effect() {}

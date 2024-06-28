@@ -4,18 +4,23 @@ import GameApp from "../games/GameApp";
 import Bottom from "../components/Bottom.jsx";
 import List from "../components/List";
 import "./Main.css";
+import io from 'socket.io-client';
+
 
 const Main = ({isListOpen, setIsListOpen}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  useEffect(() => {
 
+  useEffect(() => {
+    
     if(isOpen || isChatOpen){
-        setIsListOpen(true);
+      setIsListOpen(true);
     }else{
       setIsListOpen(false);
     }
+    
   },[isOpen, isChatOpen]);
+  
   return (
     <>
       <div>
