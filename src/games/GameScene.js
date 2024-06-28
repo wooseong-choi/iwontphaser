@@ -19,7 +19,7 @@ class GameScene extends Phaser.Scene {
     this.OPlayer = [];
 
     this.socket.on("connect", function (data) {
-      console.log("Socket.IO connected. :" + data);
+      console.log("Socket.IO connected. :" + data.uid);
     });
 
     this.socket.on("message", (data) => {
@@ -38,7 +38,7 @@ class GameScene extends Phaser.Scene {
 
           if (user.username !== user_name) {
             if (this.OPlayer[data.username]) {
-              this.OPlayer[data.username].moveToBlock(user.x, user.y);
+              this.OPlayer[data.username].moveTo(user.x, user.y);
             }
           }
         }
@@ -109,6 +109,16 @@ class GameScene extends Phaser.Scene {
     this.input.keyboard.on("keydown", (event) => {
       if (event.key === "r") {
         this.scene.restart();
+      }
+
+      if (event.key === "w") {
+        this.Player.moveTo(this.player.x, this.player.y - 16);
+      }
+      if (event.key === "a") {
+      }
+      if (event.key === "s") {
+      }
+      if (event.key === "d") {
       }
     });
 
