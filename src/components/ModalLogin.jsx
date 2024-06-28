@@ -19,6 +19,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
+    // 메인으로 보낼 때 Prop 같이 보내야 함.
     navigate("/main");
   };
 

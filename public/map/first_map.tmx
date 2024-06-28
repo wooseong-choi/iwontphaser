@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../Inner.tsx"/>
  <layer id="1" name="Tile Layer 1" width="100" height="100" offsetx="22" offsety="-8.5">
   <data encoding="base64" compression="zlib">
-   eJzt1kEKgkAAhlE9SevW1RWsO1Snqa7geRt3IkMYkf7CWzxGHRgYP9Dp2qY5F5eiW/B631DTezdR9MiiRxY9suiRRY8semTRI8u0x3A/fbZrP+sn1t7Tls3pMdwfyngsTpU1xnN6LNPjWsZbca+sMZ7TY5kejzI+i1dljfGcHsv0mPtv0OP/PX5ZDz22zPcqi/NuFufdLM67Wb79f8yx9p62zPvLokcWPbLokUWPLHpk0SOLHln0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoOYNz9Vziw==
+   eJzt2jFuwkAQQFFzEZI2NckVSO4QOA3JFXLUhJJpkLZYYWxp4rF4xZNs7TbmWyPbYr8ZhvfwEfb/ePwy0PPjtylFj1r0qEWPWvSoRY9axnr8hr9wvvN46etZu7Ee21h/Cs+b+461ye0x9T2vbbP0ta3RrR7tvb4Lr+Gts69d8w6e16O91z/j/BCOnX3tmnmV16O9109x/hW+O/vaNfMqr0e752psr3mV32MK86pWD/Mqv4d5VaPHnOdd8yqvx5znXfMqr8ec513zKq/HlW+KtXpM/aa49DWt2dRnJv8dWb4HejwqPWrRoxY9atGjFj0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADouQAqm4Er
   </data>
  </layer>
 </map>
