@@ -6,7 +6,8 @@ interface iChara {
   width: number;
   height: number;
   speed: number;
-  oldPosition: { x: number, y: number };
+  name: string;
+  oldPosition: { x: number; y: number };
 
   Preload(
     key: string,
@@ -29,6 +30,7 @@ class OPlayer implements iChara {
   width: number;
   height: number;
   speed: number;
+  name: string;
   oldPosition: { x: number; y: number };
 
   /**
@@ -37,11 +39,17 @@ class OPlayer implements iChara {
    * @param width of player Image width
    * @param height of player Image height
    */
-  constructor(obj: globalThis.Phaser.Scene, width: number, height: number) {
+  constructor(
+    obj: globalThis.Phaser.Scene,
+    name: string,
+    width: number,
+    height: number
+  ) {
     this.obj = obj;
     this.width = width;
     this.height = height;
     this.speed = 160;
+    this.name = name;
   }
 
   /**
@@ -118,7 +126,7 @@ class OPlayer implements iChara {
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(this.width, this.height, true);
     this.oldPosition = { x: x, y: y };
-    
+
     return this.player;
   }
 
@@ -130,11 +138,11 @@ class OPlayer implements iChara {
     const { left, right, up, down } = cursor;
 
     this.oldPosition = { x: this.player.x, y: this.player.y };
-    
+
     let velocityX = 0;
     let velocityY = 0;
     let animationKey: string | null = null;
-    
+
     switch (true) {
       case left.isDown:
         velocityX = -this.speed;
@@ -183,7 +191,7 @@ class OPlayer implements iChara {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     // Calculate the duration for the tween based on the distance to the target
-    const duration = distance / this.speed * 1000; // speed is in pixels per second, so multiply by 1000 to get duration in milliseconds
+    const duration = (distance / this.speed) * 1000; // speed is in pixels per second, so multiply by 1000 to get duration in milliseconds
 
     // Create a tween that updates the player's position
     this.obj.tweens.add({
@@ -191,7 +199,7 @@ class OPlayer implements iChara {
       x: x,
       y: y,
       duration: duration,
-      ease: 'Linear'
+      ease: "Linear",
     });
   }
 

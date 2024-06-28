@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import Player from "./character/Player.ts";
 import Scroll from "./scroll/scrollEventHandler.ts";
 import io from "socket.io-client";
+import OPlayer from "./character/OPlayer.ts";
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -13,17 +14,33 @@ class GameScene extends Phaser.Scene {
 
     this.Player = new Player(this, 64, 64);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
-    this.socket = io('ws://192.168.0.96:3001');
 
-    this.socket.on("connect", function () {
-      console.log("Socket.IO connected.");
+    this.socket = io("ws://localhost:3001");
+    this.OPlayer = [];
+
+    this.socket.on("connect", function (data) {
+      console.log("Socket.IO connected. :" + data);
     });
 
     this.socket.on("message", (data) => {
-      // console.log('Received: ' + data);
+      console.log(data);
+      if (data.type === "newplayer") {
+        console.log("New player connected: " + data.uid);
+        const newPlayer = new OPlayer(this, data.username, 64, 64);
+        this.OPlayer[data.username] = newPlayer;
+        newPlayer.Create(64, 64);
+      }
       if (data.type === "move") {
+        const user_name = sessionStorage.getItem("username");
+
         for (let i = 0; i < data.users.length; i++) {
-          this.Player.moveToBlock(data.users[i].x, data.users[i].y);
+          const user = data.users[i];
+
+          if (user.username !== user_name) {
+            if (this.OPlayer[data.username]) {
+              this.OPlayer[data.username].moveToBlock(user.x, user.y);
+            }
+          }
         }
       }
     });
@@ -101,12 +118,16 @@ class GameScene extends Phaser.Scene {
 
   update() {
     this.Player.Move(this.cursors);
-    if(this.Player.oldPosition && (this.player.x !== this.Player.oldPosition.x || this.player.y !== this.Player.oldPosition.y) ){
+    if (
+      this.Player.oldPosition &&
+      (this.player.x !== this.Player.oldPosition.x ||
+        this.player.y !== this.Player.oldPosition.y)
+    ) {
       const username = sessionStorage.getItem("username");
 
-      const user ={ username: username, x: this.player.x, y: this.player.y };
+      const user = { username: username, x: this.player.x, y: this.player.y };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
-      this.socket.emit('move', user);
+      this.socket.emit("move", user);
     }
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
