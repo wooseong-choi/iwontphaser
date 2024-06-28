@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import {Socket} from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 interface iChara {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -6,6 +8,7 @@ interface iChara {
   width: number;
   height: number;
   speed: number;
+  oldPosition: { x: number, y: number };
 
   Preload(
     key: string,
@@ -19,7 +22,6 @@ interface iChara {
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
-
   Effect(): void;
 }
 
@@ -29,6 +31,7 @@ class Player implements iChara {
   width: number;
   height: number;
   speed: number;
+  oldPosition: { x: number; y: number };
 
   /**
    * constructor of class Player
@@ -41,6 +44,7 @@ class Player implements iChara {
     this.width = width;
     this.height = height;
     this.speed = 160;
+    this.oldPosition = { x: 1, y: 1 };
   }
 
   /**
@@ -127,10 +131,12 @@ class Player implements iChara {
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
     const { left, right, up, down } = cursor;
 
+    this.oldPosition = { x: this.player.x, y: this.player.y };
+    
     let velocityX = 0;
     let velocityY = 0;
     let animationKey: string | null = null;
-
+    
     switch (true) {
       case left.isDown:
         velocityX = -this.speed;
@@ -171,8 +177,9 @@ class Player implements iChara {
    * @param x The x-coordinate to move to.
    * @param y The y-coordinate to move to.
    */
-  moveTo(x: number, y: number) {
+  async moveTo(x: number, y: number) {
     // Calculate the distance to the target
+    console.log(x, y);
     const dx = x - this.player.x;
     const dy = y - this.player.y;
     const distance = Math.sqrt(dx * dx + dy * dy);

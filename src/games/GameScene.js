@@ -1,11 +1,11 @@
 import Phaser from "phaser";
 import Player from "./character/Player.ts";
 import Scroll from "./scroll/scrollEventHandler.ts";
+import io from "socket.io-client";
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
-
     this.Map_Height = 800;
     this.Map_Width = 600;
     this.Tile_Height = 16;
@@ -13,6 +13,28 @@ class GameScene extends Phaser.Scene {
 
     this.Player = new Player(this, 64, 64);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
+    this.socket = io('ws://localhost:3001');
+
+    this.socket.on('connect', function() {
+      console.log('Socket.IO connected.');
+    });  
+
+    this.socket.on('message', (data)=> {
+      // console.log('Received: ' + data);
+      if(data.type === "move"){
+        for(let i = 0; i < data.users.length; i++){
+          this.Player.moveToBlock(data.users[i].x, data.users[i].y);
+        }
+      }
+    }); 
+
+    this.socket.on('disconnect', function() {
+      console.log('Socket.IO disconnected.');
+    });
+  
+    this.socket.on('error', function(error) {
+      console.log('Socket.IO Error: ' + error);
+    });
   }
 
   preload() {
@@ -64,11 +86,14 @@ class GameScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+
   }
 
   update() {
     this.Player.Move(this.cursors);
-
+    if(this.Player.oldPosition && (this.Player.x !== this.Player.oldPosition.x || this.Player.y !== this.Player.oldPosition.y) ){
+      this.socket.emit('move', { x: this.Player.x, y: this.Player.y });
+    }
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
       console.log("'Q' 키가 눌렸습니다!");
