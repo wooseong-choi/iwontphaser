@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import GameScene from "./GameScene";
-import BoardPlugin from "phaser3-rex-plugins/plugins/board-plugin.js";
 
 const GameApp = () => {
   const canvasRef = useRef(null);
-  
-  useEffect(() => {
 
+  useEffect(() => {
     // Phaser.Game 인스턴스가 여러 번 생성되지 않도록 확인
     if (!window.game) {
       const config = {
@@ -26,15 +24,6 @@ const GameApp = () => {
             debug: true,
           },
         },
-        plugins: {
-          scene: [
-            {
-              key: "rexBoard",
-              plugin: BoardPlugin,
-              mapping: "rexBoard",
-            },
-          ],
-        },
       };
       window.game = new Phaser.Game(config);
     }
@@ -46,7 +35,6 @@ const GameApp = () => {
         // window.game = null;
       }
     };
-  
   }, []);
   return <canvas ref={canvasRef} style={{ zIndex: 1 }}></canvas>;
 };

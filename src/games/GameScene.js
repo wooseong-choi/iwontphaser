@@ -15,41 +15,34 @@ class GameScene extends Phaser.Scene {
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
     this.socket = io('ws://192.168.0.96:3001');
 
-    this.socket.on('connect', function() {
-      console.log('Socket.IO connected.');
-    });  
+    this.socket.on("connect", function () {
+      console.log("Socket.IO connected.");
+    });
 
-    this.socket.on('message', (data)=> {
+    this.socket.on("message", (data) => {
       // console.log('Received: ' + data);
-      if(data.type === "move"){
-        for(let i = 0; i < data.users.length; i++){
+      if (data.type === "move") {
+        for (let i = 0; i < data.users.length; i++) {
           this.Player.moveToBlock(data.users[i].x, data.users[i].y);
         }
       }
-    }); 
-
-    this.socket.on('disconnect', function() {
-      console.log('Socket.IO disconnected.');
     });
-  
-    this.socket.on('error', function(error) {
-      console.log('Socket.IO Error: ' + error);
+
+    this.socket.on("disconnect", function () {
+      console.log("Socket.IO disconnected.");
+    });
+
+    this.socket.on("error", function (error) {
+      console.log("Socket.IO Error: " + error);
     });
   }
 
   preload() {
-    this.load.scenePlugin('rexboardplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexboardplugin.min.js', 'rexBoard', 'rexBoard');
-
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
-    this.load.tilemapTiledJSON("map", "./map/first_map.json");
+    this.load.tilemapCSV("first_map", "./map/first_map.csv");
+    this.load.image("tileset", "./gfx/Inner.png");
     this.load.atlas("background", "./gfx/inner.png", "./meta/Inner.json"); // Load your tileset image and JSON
     this.load.image("obstacle", "./gfx/7.png");
-
-    // 맵인데 이것도 나중에 바꿀거
-    // this.load.image(
-    //   "map",
-    //   "https://labs.phaser.io/assets/tests/camera/earthbound-scarab.png"
-    // );
   }
 
   create() {
@@ -63,19 +56,19 @@ class GameScene extends Phaser.Scene {
     //   }
     // }
 
-    const map = this.make.tilemap({
-      key: "map",
+    var map = this.make.tilemap({
+      key: "first_map",
       tileWidth: 16,
       tileHeight: 16,
     });
-    const tileset = map.addTilesetImage("map");
-    const layer = map.createLayer(0, tileset, 0, 0);
+    var tileset = map.addTilesetImage("tile", "tileset");
+    var layer = map.createLayer(0, tileset);
 
     this.player = this.Player.Create(64, 64);
     this.scoll.create(this, 1024, 2048);
 
-    // layer.setCollisionByProperty({ collides: true });
-    // this.physics.add.collider(this.player, layer);
+    layer.setCollisionByProperty({ collides: true });
+    this.physics.add.collider(this.player, layer);
 
     // 장애물 생성
     this.obstacles = this.physics.add.group({
@@ -104,7 +97,6 @@ class GameScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-
   }
 
   update() {
