@@ -13,7 +13,7 @@ class GameScene extends Phaser.Scene {
 
     this.Player = new Player(this, 64, 64);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
-    this.socket = io("ws://localhost:3001");
+    this.socket = io('ws://192.168.0.96:3001');
 
     this.socket.on("connect", function () {
       console.log("Socket.IO connected.");
@@ -82,7 +82,7 @@ class GameScene extends Phaser.Scene {
 
     // 장애물과 플레이어의 충돌 설정
     this.physics.add.collider(
-      this.player,
+      this.Player,
       this.obstacles,
       this.handleCollision,
       null,
@@ -101,12 +101,12 @@ class GameScene extends Phaser.Scene {
 
   update() {
     this.Player.Move(this.cursors);
-    if (
-      this.Player.oldPosition &&
-      (this.Player.x !== this.Player.oldPosition.x ||
-        this.Player.y !== this.Player.oldPosition.y)
-    ) {
-      this.socket.emit("move", { x: this.Player.x, y: this.Player.y });
+    if(this.Player.oldPosition && (this.player.x !== this.Player.oldPosition.x || this.player.y !== this.Player.oldPosition.y) ){
+      const username = sessionStorage.getItem("username");
+
+      const user ={ username: username, x: this.player.x, y: this.player.y };
+      this.Player.oldPosition = { x: this.player.x, y: this.player.y };
+      this.socket.emit('move', user);
     }
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
