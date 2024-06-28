@@ -1,0 +1,25 @@
+/* TypingAnimation.css */
+@keyframes blink {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: white;
+  }
+}
+
+.typing-container {
+  font-size: 36px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: rgb(0, 214, 122);
+  border-right: 3px solid black;
+  animation: blink 1s step-end infinite;
+}
+
+.typing-text {
+  display: inline-block;
+  vertical-align: top;
+  text-shadow: 0 0 5px #00d67a;
+}
