@@ -23,7 +23,7 @@ interface iChara {
   Effect(): void;
 }
 
-class Player implements iChara {
+class OPlayer implements iChara {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   obj: globalThis.Phaser.Scene;
   width: number;
@@ -115,10 +115,10 @@ class Player implements iChara {
     this.obj.anims.create(playerWorkUConfig);
 
     this.player = this.obj.physics.add.sprite(x, y, "player");
+    this.player.setCollideWorldBounds(true);
     this.player.body.setSize(this.width, this.height, true);
-    this.player.setCollideWorldBounds(true); 
     this.oldPosition = { x: x, y: y };
-
+    
     return this.player;
   }
 
@@ -129,43 +129,39 @@ class Player implements iChara {
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
     const { left, right, up, down } = cursor;
 
+    this.oldPosition = { x: this.player.x, y: this.player.y };
     
     let velocityX = 0;
     let velocityY = 0;
     let animationKey: string | null = null;
     
     switch (true) {
-    case left.isDown:
-      // this.player.x -= 16;
-      velocityX = -this.speed;
-      velocityY = 0;
-      animationKey = "walk_left";
-      break;
-    case right.isDown:
-      // this.player.x += 16;
-      velocityX = this.speed;
-      velocityY = 0;
-      animationKey = "walk_right";
-      break;
-    case up.isDown:
-      // this.player.y -= 16;
-      velocityY = -this.speed;
-      velocityX = 0;
-      animationKey = "walk_up";
-      break;
-    case down.isDown:
-      // this.player.y += 16;
-      velocityY = this.speed;
-      velocityX = 0;
-      animationKey = "walk_down";
-      break;
+      case left.isDown:
+        velocityX = -this.speed;
+        velocityY = 0;
+        animationKey = "walk_left";
+        break;
+      case right.isDown:
+        velocityX = this.speed;
+        velocityY = 0;
+        animationKey = "walk_right";
+        break;
+      case up.isDown:
+        velocityY = -this.speed;
+        velocityX = 0;
+        animationKey = "walk_up";
+        break;
+      case down.isDown:
+        velocityY = this.speed;
+        velocityX = 0;
+        animationKey = "walk_down";
+        break;
     }
-          
-    
+
     // Set player velocity based on key inputs
     this.player.setVelocityX(velocityX);
     this.player.setVelocityY(velocityY);
-    
+
     // Play animation if key is pressed, otherwise pause
     if (animationKey) {
       this.player.play(animationKey, true);
@@ -215,4 +211,4 @@ class Player implements iChara {
   Effect() {}
 }
 
-export default Player;
+export default OPlayer;
