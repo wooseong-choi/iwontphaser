@@ -39,9 +39,11 @@ class GameScene extends Phaser.Scene {
 
   preload() {
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
-    this.load.tilemapCSV("first_map", "./map/first_map.csv");
+    this.load.tilemapCSV("first_map", "./map/test/test.csv");
     this.load.image("tileset", "./gfx/Inner.png");
-    this.load.atlas("background", "./gfx/inner.png", "./meta/Inner.json"); // Load your tileset image and JSON
+    // this.load.tilemapCSV("first_map", "./map/first_map.csv");
+    // this.load.image("tileset", "./gfx/Inner.png");
+    // this.load.atlas("background", "./gfx/inner.png", "./meta/Inner.json"); // Load your tileset image and JSON
     this.load.image("obstacle", "./gfx/7.png");
   }
 
@@ -61,14 +63,16 @@ class GameScene extends Phaser.Scene {
       tileWidth: 16,
       tileHeight: 16,
     });
-    var tileset = map.addTilesetImage("tile", "tileset");
-    var layer = map.createLayer(0, tileset);
+    var tileset = map.addTilesetImage("tileset");
+    var layer = map.createLayer(0, tileset,0 ,0);
+
 
     this.player = this.Player.Create(64, 64);
     this.scoll.create(this, 1024, 2048);
 
     layer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(this.player, layer);
+    
 
     // 장애물 생성
     this.obstacles = this.physics.add.group({
@@ -103,9 +107,10 @@ class GameScene extends Phaser.Scene {
     this.Player.Move(this.cursors);
     if(this.Player.oldPosition && (this.player.x !== this.Player.oldPosition.x || this.player.y !== this.Player.oldPosition.y) ){
       const username = sessionStorage.getItem("username");
-
-      const user ={ username: username, x: this.player.x, y: this.player.y };
+      // console.log(this.Player.oldPosition);
+      // console.log(this.player.x, this.player.y);
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
+      const user ={ username: username, x: this.player.x, y: this.player.y };
       this.socket.emit('move', user);
     }
     // 'Q' 키가 눌렸을 때 실행할 코드
