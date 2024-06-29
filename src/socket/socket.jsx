@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 
 // Connect to the server
-const socket = io("http://your-server-url");
+export var socket = null; // io("ws://localhost:3001");
 
 // Listen for 'connect' event
 socket.on("connect", () => {

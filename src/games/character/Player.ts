@@ -128,6 +128,7 @@ class Player implements iChara {
    */
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
     const { left, right, up, down } = cursor;
+
     
     let velocityX = 0;
     let velocityY = 0;
@@ -159,6 +160,7 @@ class Player implements iChara {
       animationKey = "walk_down";
       break;
     }
+
     
     // Set player velocity based on key inputs
     this.player.setVelocityX(velocityX);
