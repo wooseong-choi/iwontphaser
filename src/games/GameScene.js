@@ -15,37 +15,57 @@ class GameScene extends Phaser.Scene {
     this.Player = new Player(this, 64, 64);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://192.168.0.96:3001");
+    this.socket = io("ws://localhost:3001");
     this.OPlayer = [];
 
     this.socket.on("connect", function (data) {
+      console.log(data);
       console.log("Socket.IO connected. :" + data.uid);
     });
 
     this.socket.on("message", (data) => {
-      if (data.type === "newplayer") {
-        console.log("New player connected: " + data.uid);
-        const newPlayer = new OPlayer(this, data.username, 64, 64);
-        this.OPlayer[data.username] = newPlayer;
-        newPlayer.Create(64, 64);
-      }
-      if (data.type === "move") {
-        const user_name = sessionStorage.getItem("username");
+      console.log(data);
+      switch (data.type) {
+        case "message":
+          console.log(data.message);
+          break;
 
-        for (let i = 0; i < data.users.length; i++) {
-          const user = data.users[i];
+        case "newplayer":
+          console.log("New player connected: " + data.uid);
+          const newPlayer = new OPlayer(this, data.username, 64, 64);
+          newPlayer.Create(64, 64);
+          this.OPlayer[data.username] = newPlayer;
+          break;
 
-          if (user.username !== user_name) {
-            if (this.OPlayer[user.username]) {
-              this.OPlayer[user.username].moveToBlock(user.player.x, user.player.y);
+        case "move":
+          const user_name = sessionStorage.getItem("username");
+          for (let i = 0; i < data.users.length; i++) {
+            const user = data.users[i];
+            if (user.username !== user_name) {
+              if (this.OPlayer[user.username]) {
+                this.OPlayer[user.username].moveToBlock(
+                  user.player.x,
+                  user.player.y
+                );
+              }
             }
           }
-        }
+          break;
+        case "leave":
+          // 해당 유저 삭제 코드
+          console.log("Player disconnected: " + data.uid);
+          this.OPlayer[data.username].destroy();
+          delete this.OPlayer[data.username];
+          break;
       }
     });
 
+    // 웹 소켓 끊겼을 때 발생 이벤트
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
+      this.socket.emit("leave", {
+        username: sessionStorage.getItem("username"),
+      });
     });
 
     this.socket.on("error", function (error) {
@@ -74,7 +94,9 @@ class GameScene extends Phaser.Scene {
     //   }
     // }
     if (this.socket && this.socket.connected) {
-      this.socket.emit('join', {username: sessionStorage.getItem("username")});
+      this.socket.emit("join", {
+        username: sessionStorage.getItem("username"),
+      });
     }
 
     var map = this.make.tilemap({
@@ -83,8 +105,7 @@ class GameScene extends Phaser.Scene {
       tileHeight: 16,
     });
     var tileset = map.addTilesetImage("tileset");
-    var layer = map.createLayer(0, tileset,0 ,0);
-
+    var layer = map.createLayer(0, tileset, 0, 0);
 
     this.player = this.Player.Create(64, 64);
     this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
@@ -92,7 +113,6 @@ class GameScene extends Phaser.Scene {
 
     layer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(this.player, layer);
-    
 
     // 장애물 생성
     this.obstacles = this.physics.add.group({

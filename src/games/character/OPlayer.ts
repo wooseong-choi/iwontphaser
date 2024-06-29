@@ -22,6 +22,7 @@ interface iChara {
 
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
   Effect(): void;
+  Destroy(): void;
 }
 
 class OPlayer implements iChara {
@@ -217,6 +218,10 @@ class OPlayer implements iChara {
   }
 
   Effect() {}
+
+  Destroy() {
+    this.player.destroy();
+  }
 }
 
 export default OPlayer;
