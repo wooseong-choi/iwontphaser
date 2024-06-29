@@ -19,7 +19,7 @@ class GameScene extends Phaser.Scene {
     this.OPlayer = [];
 
     this.socket.on("connect", function (data) {
-      console.log("Socket.IO connected. "+data);
+      console.log(data);
     });
 
     this.socket.on("message", (data) => {
@@ -42,10 +42,7 @@ class GameScene extends Phaser.Scene {
             const user = data.users[i];
             if (user.username !== user_name) {
               if (this.OPlayer[user.username]) {
-                this.OPlayer[user.username].moveToBlock(
-                  user.player.x,
-                  user.player.y
-                );
+                this.OPlayer[user.username].moveTo(user.x, user.y);
               }
             }
           }
@@ -92,10 +89,12 @@ class GameScene extends Phaser.Scene {
     //     tiles.create(i, j, "background", "frame_1_0");
     //   }
     // }
+    console.log("정보: ", this.socket, this.socket.connected);
     if (this.socket && this.socket.connected) {
       this.socket.emit("join", {
         username: sessionStorage.getItem("username"),
       });
+      console.log("Join 실행");
     }
 
     var map = this.make.tilemap({
