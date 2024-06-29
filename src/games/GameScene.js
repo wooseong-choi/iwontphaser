@@ -6,8 +6,8 @@ class GameScene extends Phaser.Scene {
   constructor() {
     super();
 
-    this.Map_Height = 800;
-    this.Map_Width = 608;
+    this.Map_Height = window.innerHeight;
+    this.Map_Width = window.innerWidth;
     this.Tile_Height = 16;
     this.Tile_Width = 16;
 
@@ -17,7 +17,7 @@ class GameScene extends Phaser.Scene {
 
   preload() {
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
-    this.load.atlas("background", "./gfx/Overworld.png", "./world.json"); // Load your tileset image and JSON
+    this.load.atlas("background", "./gfx/Inner.png", "./meta/inner.json"); // Load your tileset image and JSON
     this.load.image("obstacle", "./gfx/7.png");
 
     // 맵인데 이것도 나중에 바꿀거
@@ -32,9 +32,9 @@ class GameScene extends Phaser.Scene {
     const tiles = this.physics.add.staticGroup();
 
     // Add tiles from the tileset
-    for (let i = 0; i < this.Map_Height; i += this.Tile_Height) {
-      for (let j = 0; j < this.Map_Width; j += this.Tile_Width) {
-        tiles.create(i, j, "background", "tile_0");
+    for (let i = 0; i < this.Map_Width; i += this.Tile_Width * 4) {
+        for (let j = 0; j < this.Map_Height; j += this.Tile_Height * 4) {
+        tiles.create(i, j, "background", "frame_1_0").setScale(4);
       }
     }
 

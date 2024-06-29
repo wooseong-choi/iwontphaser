@@ -4,8 +4,8 @@ import GameScene from "./GameScene";
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 608,
+  width: window.innerWidth,
+  height: window.innerHeight,
   scene: GameScene,
   backgroundColor: "#2d2d2d",
   parent: "phaser-example",
@@ -21,7 +21,7 @@ const config = {
     },
     arcade: {
       gravity: { y: 0, x: 0 },
-      debug: true,
+      debug: false,
     },
   },
 };
