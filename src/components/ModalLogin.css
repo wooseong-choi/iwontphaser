@@ -1,0 +1,108 @@
+/* ModalLogin.css */
+.modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal {
+  width: 400px;
+  height: auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.modal .body {
+  padding: 20px 30px;
+}
+
+.modal .form-login {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal .form-login label {
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.modal .form-login input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.modal .form-login input:focus {
+  border-color: #00d67a;
+  outline: none;
+}
+
+.modal .footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 30px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+}
+
+.modal .footer button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.modal .footer button:first-child {
+  background-color: #00d67a;
+  color: #fff;
+}
+
+.modal .footer button:first-child:hover {
+  background-color: #00c067;
+}
+
+.modal .footer button:last-child {
+  background-color: #fff;
+  color: #00d67a;
+  border: 1px solid #00d67a;
+}
+
+.modal .footer button:last-child:hover {
+  background-color: #f1f1f1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

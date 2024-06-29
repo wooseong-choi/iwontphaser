@@ -1,0 +1,36 @@
+html, body, #root{
+    height: 100%;/* Viewport Height */
+    overflow-y: hidden;
+}
+#root > div{
+    height: 100%;
+    width: 100%;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+}
+body{
+    display: flex;
+    flex-direction: column;
+}
+#GameApp {
+    background: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100vw
+}
+#canvas-parent, #gameMain{
+    width: 100%;
+    height: 100%;
+}
+#gameMain{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    min-height: 0px;
+    position: relative;
+}

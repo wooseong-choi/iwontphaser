@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .App {
   text-align: center;
 }
@@ -39,4 +35,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#background {
+  background-color: #181818;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

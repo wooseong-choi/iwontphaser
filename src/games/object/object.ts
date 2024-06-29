@@ -1,11 +1,10 @@
 import Phaser from "phaser";
 
 interface iObj {
-  player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  object: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   scene: globalThis.Phaser.Scene;
   width: number;
   height: number;
-  speed: number;
 
   Preload(
     key: string,
@@ -18,4 +17,14 @@ interface iObj {
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
   Effect(): void;
+  Collider(): void;
 }
+
+// class Object implements iObj {
+//   object: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+//   scene: Phaser.Scene;
+//   width: number;
+//   height: number;
+
+//   constructor() {}
+// }
