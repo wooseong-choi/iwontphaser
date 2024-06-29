@@ -23,7 +23,7 @@ class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("message", (data) => {
-      console.log(data);
+      // console.log(data);
       switch (data.type) {
         case "message":
           console.log(data.message);
@@ -31,18 +31,32 @@ class GameScene extends Phaser.Scene {
 
         case "newplayer":
           console.log("New player connected: " + data.uid);
-          const newPlayer = new OPlayer(this, data.username, 64, 64);
-          newPlayer.Create(64, 64);
-          this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+          // const newPlayer = new OPlayer(this, data.username, 64, 64);
+          // newPlayer.Create(64, 64);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+          this.OPlayer = data.users; 
+          console.log(data.users);
+          for (let i = 0; i < this.OPlayer.length; i++) {
+            const userJson = this.OPlayer[i];
+            console.log("New player connected: " + userJson.username);
+            const newPlayer = new OPlayer(this, userJson.username, 64, 64);
+            newPlayer.Create(userJson.x, userJson.y);
+          }
+
           break;
 
         case "move":
           const user_name = sessionStorage.getItem("username");
+          const uid = this.socket.id;
           for (let i = 0; i < data.users.length; i++) {
             const user = data.users[i];
-            if (user.username !== user_name) {
-              if (this.OPlayer[user.username]) {
-                this.OPlayer[user.username].moveTo(user.x, user.y);
+            if (user.uid !== uid) {
+              for (let j = 0; j < this.OPlayer.length; j++) {
+                if (this.OPlayer[j] === user.uid) {
+                  console.log("Move player: " + user.uid + " to " + user.x + ", " + user.y);
+                  this.OPlayer[j].moveTo(user.x, user.y);
+                  break;
+                }
               }
             }
           }
@@ -50,8 +64,8 @@ class GameScene extends Phaser.Scene {
         case "leave":
           // 해당 유저 삭제 코드
           console.log("Player disconnected: " + data.uid);
-          this.OPlayer[data.username].destroy();
-          delete this.OPlayer[data.username];
+          this.OPlayer[data.uid].destroy();
+          delete this.OPlayer[data.uid];
           break;
         case "syncUser":
           this.OPlayer = data.users; 
@@ -59,7 +73,7 @@ class GameScene extends Phaser.Scene {
             const userJson = this.OPlayer[i];
             new OPlayer(this, userJson.uid, userJson.x, userJson.y);
           }
-          break
+          break;
 
       }
     });
@@ -168,7 +182,7 @@ class GameScene extends Phaser.Scene {
     ) {
       const username = sessionStorage.getItem("username");
 
-      const user = { username: username, x: this.player.x, y: this.player.y };
+      const user = { uid:this.socket.id, username: username, x: this.player.x, y: this.player.y };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
