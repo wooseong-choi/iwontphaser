@@ -16,8 +16,8 @@ class ScrollHandler {
   preload() {}
 
   create() {
-    // 카메라 영역 설정
-    this.scene.cameras.main.setBounds(0, 0, this.width, this.height, false);
+    // 카메라 영역 설정 왜 반대로 넣어야 하는지 모르겠음
+    this.scene.cameras.main.setBounds(0, 0, this.height, this.width, false);
     // 초기 카메라 위치
     this.scene.cameras.main.setZoom(1);
     this.scene.cameras.main.centerOn(0, 0);
@@ -37,7 +37,7 @@ class ScrollHandler {
         const newScrollX = pointerWorldX + pointer.x / smoothZoom;
         const newScrollY = pointerWorldY + pointer.y / smoothZoom;
         cam.setZoom(smoothZoom);
-        cam.centerOn(newScrollX, newScrollY);
+        cam.centerOn(pointerWorldX, pointerWorldY);
     });
   }
 

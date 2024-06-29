@@ -19,8 +19,7 @@ class GameScene extends Phaser.Scene {
     this.OPlayer = [];
 
     this.socket.on("connect", function (data) {
-      console.log(data);
-      console.log("Socket.IO connected. :" + data.uid);
+      console.log("Socket.IO connected. "+data);
     });
 
     this.socket.on("message", (data) => {
