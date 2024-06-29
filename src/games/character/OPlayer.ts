@@ -77,46 +77,46 @@ class OPlayer implements iChara {
     x: number,
     y: number
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    const playerWorkDConfig = {
-      key: "walk_down",
-      frames: this.obj.anims.generateFrameNames("player", {
-        start: 0,
-        end: 3,
-        prefix: "frame_0_",
-      }),
-      frameRate: 10,
-      repeat: -1,
-    };
-    const playerWorkLConfig = {
-      key: "walk_left",
-      frames: this.obj.anims.generateFrameNames("player", {
-        start: 0,
-        end: 3,
-        prefix: "frame_1_",
-      }),
-      frameRate: 10,
-      repeat: -1,
-    };
-    const playerWorkRConfig = {
-      key: "walk_right",
-      frames: this.obj.anims.generateFrameNames("player", {
-        start: 0,
-        end: 3,
-        prefix: "frame_2_",
-      }),
-      frameRate: 10,
-      repeat: -1,
-    };
-    const playerWorkUConfig = {
-      key: "walk_up",
-      frames: this.obj.anims.generateFrameNames("player", {
-        start: 0,
-        end: 3,
-        prefix: "frame_3_",
-      }),
-      frameRate: 10,
-      repeat: -1,
-    };
+    // const playerWorkDConfig = {
+    //   key: "walk_down",
+    //   frames: this.obj.anims.generateFrameNames("player", {
+    //     start: 0,
+    //     end: 3,
+    //     prefix: "frame_0_",
+    //   }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // };
+    // const playerWorkLConfig = {
+    //   key: "walk_left",
+    //   frames: this.obj.anims.generateFrameNames("player", {
+    //     start: 0,
+    //     end: 3,
+    //     prefix: "frame_1_",
+    //   }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // };
+    // const playerWorkRConfig = {
+    //   key: "walk_right",
+    //   frames: this.obj.anims.generateFrameNames("player", {
+    //     start: 0,
+    //     end: 3,
+    //     prefix: "frame_2_",
+    //   }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // };
+    // const playerWorkUConfig = {
+    //   key: "walk_up",
+    //   frames: this.obj.anims.generateFrameNames("player", {
+    //     start: 0,
+    //     end: 3,
+    //     prefix: "frame_3_",
+    //   }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // };
 
     // this.obj.anims.create(playerWorkDConfig);
     // this.obj.anims.create(playerWorkLConfig);

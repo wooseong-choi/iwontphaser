@@ -19,7 +19,7 @@ class GameScene extends Phaser.Scene {
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
     this.socket = io("ws://localhost:3001");
-    this.OPlayer = [];
+    this.OPlayer = {};
 
     this.socket.on("connect", function (data) {
       console.log(data);
@@ -32,35 +32,42 @@ class GameScene extends Phaser.Scene {
           console.log(data.message);
           break;
 
-        case "newplayer":
+        case "join":
+          // 다른 유저들의 새로운 사람 처리
           console.log("New player connected: " + data.uid);
-          // const newPlayer = new OPlayer(this, data.username, 64, 64);
-          // newPlayer.Create(64, 64);
-          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
-          this.OPlayer = data.users; 
-          console.log(data.users);
-          for (let i = 0; i < this.OPlayer.length; i++) {
-            const userJson = this.OPlayer[i];
-            console.log("New player connected: " + userJson.username);
-            const newPlayer = new OPlayer(this, userJson.username, 64, 64);
-            newPlayer.Create(userJson.x, userJson.y);
-          }
 
+          // this.OPlayer = data.users;
+          // console.log(data.users);
+          // for (let i = 0; i < this.OPlayer.length; i++) {
+          //   const userJson = this.OPlayer[i];
+          //   console.log("New player connected: " + userJson.username);
+          //   const newPlayer = new OPlayer(this, userJson.username, 64, 64);
+          //   newPlayer.Create(userJson.x, userJson.y);
+          // }
+          this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
+          this.OPlayer[data.uid].Create(data.x, data.y);
           break;
 
         case "move":
-          const user_name = sessionStorage.getItem("username");
-          const uid = this.socket.id;
+          // 유저 움직임 처리
+          console.log(this.uid);
+          console.log(data);
+          // const user_name = sessionStorage.getItem("username");
+          // for (let i = 0; i < data.users.length; i++) {
+          //   const user = data.users[i];
+          //   if (user.uid !== this.uid) {
+          //     for (let j = 0; j < this.OPlayer.length; j++) {
+          //       if (this.OPlayer[j] === user.uid) {
+          //         this.OPlayer[j].moveTo(user.x, user.y);
+          //         break;
+          //       }
+          //     }
+          //   }
+          // }
           for (let i = 0; i < data.users.length; i++) {
             const user = data.users[i];
-            if (user.uid !== uid) {
-              for (let j = 0; j < this.OPlayer.length; j++) {
-                if (this.OPlayer[j] === user.uid) {
-                  console.log("Move player: " + user.uid + " to " + user.x + ", " + user.y);
-                  this.OPlayer[j].moveTo(user.x, user.y);
-                  break;
-                }
-              }
+            if (user.uid !== this.uid && this.OPlayer[user.uid]) {
+              this.OPlayer[user.uid].moveTo(user.x, user.y);
             }
           }
           break;
@@ -68,29 +75,55 @@ class GameScene extends Phaser.Scene {
         case "leave":
           // 해당 유저 삭제 코드
           console.log("Player disconnected: " + data.uid);
-          this.OPlayer[data.uid].destroy();
-          delete this.OPlayer[data.uid];
-          break;
-
-        case "syncUser":
-          this.OPlayer = data.users;
-          for (let i = 0; i < this.OPlayer.length; i++) {
-            const userJson = this.OPlayer[i];
-            const oldUser = new OPlayer(this, userJson.uid, 64, 64);
-            oldUser.Create(userJson.x, userJson.y);
+          if (this.OPlayer[data.uid]) {
+            this.OPlayer[data.uid].destroy(); // Assuming OPlayer has a destroy method
+            delete this.OPlayer[data.uid];
           }
           break;
 
+        case "syncUser":
+          this.uid = data.uid;
+          // User 렌더링 해줘야됨
+          // this.OPlayer = data.users;
+          // console.log(data.users);
+          // for (let i = 0; i < this.OPlayer.length; i++) {
+          //   const userJson = this.OPlayer[i];
+          //   console.log("New player connected: " + userJson.username);
+          //   const newPlayer = new OPlayer(this, userJson.username, 64, 64);
+          //   newPlayer.Create(userJson.x, userJson.y);
+          // }
+          for (let i = 0; i < data.users.length; i++) {
+            const userJson = data.users[i];
+            if (!this.OPlayer[userJson.uid]) {
+              console.log("New player connected:", userJson.username);
+              this.OPlayer[userJson.uid] = new OPlayer(
+                this,
+                userJson.username,
+                64,
+                64
+              );
+              this.OPlayer[userJson.uid].Create(userJson.x, userJson.y);
+            }
+          }
+          break;
       }
     });
 
-    // 웹 소켓 끊겼을 때 발생 이벤트
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
-      sessionStorage.removeItem("username");
       this.socket.emit("leave", {
         username: sessionStorage.getItem("username"),
       });
+      sessionStorage.removeItem("username");
+    });
+
+    // 웹 소켓 끊겼을 때 발생 이벤트
+    this.socket.on("disconnecting", function () {
+      console.log("Socket.IO disconnected.");
+      this.socket.emit("leave", {
+        username: sessionStorage.getItem("username"),
+      });
+      sessionStorage.removeItem("username");
     });
 
     this.socket.on("error", function (error) {
@@ -102,29 +135,17 @@ class GameScene extends Phaser.Scene {
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     this.load.tilemapCSV("first_map", "./map/test/test.csv");
     this.load.image("tileset", "./gfx/Inner.png");
-    // this.load.tilemapCSV("first_map", "./map/first_map.csv");
-    // this.load.image("tileset", "./gfx/Inner.png");
-    // this.load.atlas("background", "./gfx/inner.png", "./meta/Inner.json"); // Load your tileset image and JSON
+
     this.load.image("obstacle", "./gfx/7.png");
   }
 
   create() {
-    // Create a static group for the tiles
-
-    // Add tiles from the tileset
-    // const tiles = this.physics.add.staticGroup();
-    // for (let i = 0; i < this.Map_Width; i += this.Tile_Width) {
-    //   for (let j = 0; j < this.Map_Height; j += this.Tile_Height) {
-    //     tiles.create(i, j, "background", "frame_1_0");
-    //   }
-    // }
     console.log("정보: ", this.socket, this.socket.connected);
-    if (this.socket && this.socket.connected) {
-      this.socket.emit("join", {
-        username: sessionStorage.getItem("username"),
-      });
-      console.log("Join 실행");
-    }
+
+    this.socket.emit("join", {
+      username: sessionStorage.getItem("username"),
+    });
+    console.log("Join 실행");
 
     var map = this.make.tilemap({
       key: "first_map",
@@ -164,16 +185,6 @@ class GameScene extends Phaser.Scene {
       if (event.key === "r") {
         this.scene.restart();
       }
-
-      if (event.key === "w") {
-        this.Player.moveTo(this.player.x, this.player.y - 16);
-      }
-      if (event.key === "a") {
-      }
-      if (event.key === "s") {
-      }
-      if (event.key === "d") {
-      }
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -189,7 +200,12 @@ class GameScene extends Phaser.Scene {
     ) {
       const username = sessionStorage.getItem("username");
 
-      const user = { uid:this.socket.id, username: username, x: this.player.x, y: this.player.y };
+      const user = {
+        uid: this.socket.id,
+        username: username,
+        x: this.player.x,
+        y: this.player.y,
+      };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
