@@ -22,6 +22,7 @@ interface iChara {
 
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void;
   Effect(): void;
+  Destroy(): void;
 }
 
 class OPlayer implements iChara {
@@ -32,7 +33,7 @@ class OPlayer implements iChara {
   speed: number;
   name: string;
   oldPosition: { x: number; y: number };
-
+  uid:number;
   /**
    * constructor of class Player
    * @param obj Game Object of Phaser
@@ -43,13 +44,15 @@ class OPlayer implements iChara {
     obj: globalThis.Phaser.Scene,
     name: string,
     width: number,
-    height: number
+    height: number,
+    uid:number
   ) {
     this.obj = obj;
     this.width = width;
     this.height = height;
     this.speed = 160;
     this.name = name;
+    this.uid = uid;
   }
 
   /**
@@ -117,10 +120,10 @@ class OPlayer implements iChara {
       repeat: -1,
     };
 
-    this.obj.anims.create(playerWorkDConfig);
-    this.obj.anims.create(playerWorkLConfig);
-    this.obj.anims.create(playerWorkRConfig);
-    this.obj.anims.create(playerWorkUConfig);
+    // this.obj.anims.create(playerWorkDConfig);
+    // this.obj.anims.create(playerWorkLConfig);
+    // this.obj.anims.create(playerWorkRConfig);
+    // this.obj.anims.create(playerWorkUConfig);
 
     this.player = this.obj.physics.add.sprite(x, y, "player");
     this.player.setCollideWorldBounds(true);
@@ -217,6 +220,10 @@ class OPlayer implements iChara {
   }
 
   Effect() {}
+
+  Destroy() {
+    this.player.destroy();
+  }
 }
 
 export default OPlayer;
