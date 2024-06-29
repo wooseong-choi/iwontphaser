@@ -16,7 +16,7 @@ class GameScene extends Phaser.Scene {
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
     this.socket = io("ws://localhost:3001");
-    this.OPlayer = [];
+    this.OPlayer = [OPlayer];
     this.uid = undefined;
 
     this.socket.on("connect", function (data) {
@@ -35,10 +35,10 @@ class GameScene extends Phaser.Scene {
           // const newPlayer = new OPlayer(this, data.username, 64, 64);
           // newPlayer.Create(64, 64);
           // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
-          this.OPlayer = data.users; 
+          const users = data.users;
           console.log(data.users);
-          for (let i = 0; i < this.OPlayer.length; i++) {
-            const userJson = this.OPlayer[i];
+          for (let i = 0; i < users.length; i++) {
+            const userJson = users[i];
             console.log("New player connected: " + userJson.username);
             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
               if(this.uid === undefined){
@@ -47,8 +47,9 @@ class GameScene extends Phaser.Scene {
               continue;
             }
 
-            const newPlayer = new OPlayer(this, userJson.username, 64, 64);
+            const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
             newPlayer.Create(userJson.x, userJson.y);
+            this.OPlayer.push(newPlayer);
           }
 
           break;
@@ -60,7 +61,7 @@ class GameScene extends Phaser.Scene {
             const user = data.users[i];
             if (user.uid !== uid) {
               for (let j = 0; j < this.OPlayer.length; j++) {
-                if (this.OPlayer[j] === user.uid) {
+                if (this.OPlayer[j].uid === user.uid) {
                   console.log("Move player: " + user.uid + " to " + user.x + ", " + user.y);
                   this.OPlayer[j].moveTo(user.x, user.y);
                   break;
@@ -76,10 +77,10 @@ class GameScene extends Phaser.Scene {
           delete this.OPlayer[data.uid];
           break;
         case "syncUser":
-          this.OPlayer = data.users; 
-          for (let i = 0; i < this.OPlayer.length; i++) {
-            const userJson = this.OPlayer[i];
-            new OPlayer(this, userJson.uid, userJson.x, userJson.y);
+          const user_list = data.users; 
+          for (let i = 0; i < user_list.length; i++) {
+            const userJson = user_list[i];
+            new OPlayer(this, userJson.uid, userJson.x, userJson.y, user_list.uid );
           }
           break;
 
