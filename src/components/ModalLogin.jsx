@@ -20,7 +20,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
-    // alert(form.username);
+
     sessionStorage.setItem("username", username);
     
     navigate("/main");
