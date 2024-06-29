@@ -13,9 +13,9 @@ class GameScene extends Phaser.Scene {
     this.Tile_Width = 16;
 
     this.Player = new Player(this, 64, 64);
-    this.scoll = new Scroll(this, this.Map_Width, this.Map_Height);
+    this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://localhost:3001");
+    this.socket = io("ws://192.168.0.96:3001");
     this.OPlayer = [];
 
     this.socket.on("connect", function (data) {
@@ -23,7 +23,6 @@ class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("message", (data) => {
-      console.log(data);
       if (data.type === "newplayer") {
         console.log("New player connected: " + data.uid);
         const newPlayer = new OPlayer(this, data.username, 64, 64);
@@ -37,8 +36,8 @@ class GameScene extends Phaser.Scene {
           const user = data.users[i];
 
           if (user.username !== user_name) {
-            if (this.OPlayer[data.username]) {
-              this.OPlayer[data.username].moveToBlock(user.x, user.y);
+            if (this.OPlayer[user.username]) {
+              this.OPlayer[user.username].moveToBlock(user.player.x, user.player.y);
             }
           }
         }
@@ -74,6 +73,9 @@ class GameScene extends Phaser.Scene {
     //     tiles.create(i, j, "background", "frame_1_0");
     //   }
     // }
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('join', {username: sessionStorage.getItem("username")});
+    }
 
     var map = this.make.tilemap({
       key: "first_map",
@@ -85,7 +87,8 @@ class GameScene extends Phaser.Scene {
 
 
     this.player = this.Player.Create(64, 64);
-    this.scoll.create(this, 1024, 2048);
+    this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
+    this.scoll.create(this, this.Map_Width, this.Map_Height);
 
     layer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(this.player, layer);

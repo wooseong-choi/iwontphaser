@@ -8,35 +8,6 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-    const socket = io('ws://192.168.0.96:3001');
-
-    socket.on('connect', function() {
-      console.log('Socket.IO connected.');
-      // socket.emit('join', {username: 'testuser'});
-    });
-
-    socket.on('message', function(data) {
-      console.log('Received: ' + data);
-    });
-
-    socket.on('disconnect', function() {
-      console.log('Socket.IO disconnected.');
-    });
-
-    socket.on('error', function(error) {
-      console.log('Socket.IO Error: ' + error);
-    });
-
-    setSocket(socket);
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -51,9 +22,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     console.log("Password:", password);
     // alert(form.username);
     sessionStorage.setItem("username", username);
-    if (socket && socket.connected) {
-      socket.emit('join', {username: username});
-    }
+    
     navigate("/main");
   };
 

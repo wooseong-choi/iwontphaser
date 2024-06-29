@@ -21,7 +21,6 @@ body{
     height: 100%;
     overflow: hidden;
     position: relative;
-    width: 100vw
 }
 #canvas-parent, #gameMain{
     width: 100%;
