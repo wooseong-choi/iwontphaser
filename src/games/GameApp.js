@@ -22,6 +22,7 @@ const GameApp = () => {
           arcade: {
             gravity: { y: 0, x: 0 },
             debug: true,
+            fps: 30,
           },
         },
       };
