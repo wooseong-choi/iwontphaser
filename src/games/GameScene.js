@@ -33,7 +33,7 @@ class GameScene extends Phaser.Scene {
           console.log("New player connected: " + data.uid);
           const newPlayer = new OPlayer(this, data.username, 64, 64);
           newPlayer.Create(64, 64);
-          this.OPlayer[data.username] = newPlayer;
+          this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
           break;
 
         case "move":
@@ -53,6 +53,14 @@ class GameScene extends Phaser.Scene {
           this.OPlayer[data.username].destroy();
           delete this.OPlayer[data.username];
           break;
+        case "syncUser":
+          this.OPlayer = data.users; 
+          for (let i = 0; i < this.OPlayer.length; i++) {
+            const userJson = this.OPlayer[i];
+            new OPlayer(this, userJson.uid, userJson.x, userJson.y);
+          }
+          break
+
       }
     });
 
