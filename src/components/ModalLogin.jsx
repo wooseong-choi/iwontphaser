@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ModalLogin.css";
-import io from "socket.io-client";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
@@ -22,7 +21,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     console.log("Password:", password);
 
     sessionStorage.setItem("username", username);
-    
+
     navigate("/main");
   };
 
