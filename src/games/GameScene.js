@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
 
     this.socket = io("ws://localhost:3001");
     this.OPlayer = [];
+    this.uid = undefined;
 
     this.socket.on("connect", function (data) {
       console.log(data);
@@ -39,6 +40,13 @@ class GameScene extends Phaser.Scene {
           for (let i = 0; i < this.OPlayer.length; i++) {
             const userJson = this.OPlayer[i];
             console.log("New player connected: " + userJson.username);
+            if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
+              if(this.uid === undefined){
+                this.uid = userJson.uid;
+              }
+              continue;
+            }
+
             const newPlayer = new OPlayer(this, userJson.username, 64, 64);
             newPlayer.Create(userJson.x, userJson.y);
           }
@@ -182,7 +190,7 @@ class GameScene extends Phaser.Scene {
     ) {
       const username = sessionStorage.getItem("username");
 
-      const user = { uid:this.socket.id, username: username, x: this.player.x, y: this.player.y };
+      const user = { uid: this.uid,clientid: this.socket.id, username: username, x: this.player.x, y: this.player.y };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
