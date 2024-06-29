@@ -11,23 +11,23 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socket = io('ws://192.168.0.96:3001');
+    const socket = io("localhost:3001");
 
-    socket.on('connect', function() {
-      console.log('Socket.IO connected.');
+    socket.on("connect", function () {
+      console.log("Socket.IO connected.");
       // socket.emit('join', {username: 'testuser'});
     });
 
-    socket.on('message', function(data) {
-      console.log('Received: ' + data);
+    socket.on("message", function (data) {
+      console.log("Received: " + data);
     });
 
-    socket.on('disconnect', function() {
-      console.log('Socket.IO disconnected.');
+    socket.on("disconnect", function () {
+      console.log("Socket.IO disconnected.");
     });
 
-    socket.on('error', function(error) {
-      console.log('Socket.IO Error: ' + error);
+    socket.on("error", function (error) {
+      console.log("Socket.IO Error: " + error);
     });
 
     setSocket(socket);
@@ -49,10 +49,10 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
-    // alert(form.username);
+
     sessionStorage.setItem("username", username);
     if (socket && socket.connected) {
-      socket.emit('join', {username: username});
+      socket.emit("join", { username: username });
     }
     navigate("/main");
   };
