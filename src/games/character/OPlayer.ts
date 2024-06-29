@@ -118,10 +118,10 @@ class OPlayer implements iChara {
       repeat: -1,
     };
 
-    this.obj.anims.create(playerWorkDConfig);
-    this.obj.anims.create(playerWorkLConfig);
-    this.obj.anims.create(playerWorkRConfig);
-    this.obj.anims.create(playerWorkUConfig);
+    // this.obj.anims.create(playerWorkDConfig);
+    // this.obj.anims.create(playerWorkLConfig);
+    // this.obj.anims.create(playerWorkRConfig);
+    // this.obj.anims.create(playerWorkUConfig);
 
     this.player = this.obj.physics.add.sprite(x, y, "player");
     this.player.setCollideWorldBounds(true);
