@@ -7,6 +7,9 @@ import OPlayer from "./character/OPlayer.ts";
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
+
+    this.uid = null;
+
     this.Map_Height = 800;
     this.Map_Width = 600;
     this.Tile_Height = 16;
@@ -29,11 +32,19 @@ class GameScene extends Phaser.Scene {
           console.log(data.message);
           break;
 
-        case "newplayer":
-          console.log("New player connected: " + data.uid);
-          const newPlayer = new OPlayer(this, data.username, 64, 64);
-          newPlayer.Create(64, 64);
-          this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+        case "join":
+          this.uid = data.uid;
+          for (let i = 0; i < data.users.length; i++) {
+            const element = data.users[i];
+            const newPlayer = new OPlayer(this, data.username, 64, 64);
+            newPlayer.Create(element.x, element.y);
+            this.OPlayer.push({
+              uid: data.users.uid,
+              username: data.users.username,
+              x: element.x,
+              y: element.y,
+            });
+          }
           break;
 
         case "move":
@@ -47,26 +58,29 @@ class GameScene extends Phaser.Scene {
             }
           }
           break;
+
         case "leave":
           // 해당 유저 삭제 코드
           console.log("Player disconnected: " + data.uid);
           this.OPlayer[data.username].destroy();
           delete this.OPlayer[data.username];
           break;
+
         case "syncUser":
-          this.OPlayer = data.users; 
+          this.OPlayer = data.users;
           for (let i = 0; i < this.OPlayer.length; i++) {
             const userJson = this.OPlayer[i];
-            new OPlayer(this, userJson.uid, userJson.x, userJson.y);
+            const oldUser = new OPlayer(this, userJson.uid, 64, 64);
+            oldUser.Create(userJson.x, userJson.y);
           }
-          break
-
+          break;
       }
     });
 
     // 웹 소켓 끊겼을 때 발생 이벤트
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
+      sessionStorage.removeItem("username");
       this.socket.emit("leave", {
         username: sessionStorage.getItem("username"),
       });
@@ -168,7 +182,13 @@ class GameScene extends Phaser.Scene {
     ) {
       const username = sessionStorage.getItem("username");
 
-      const user = { username: username, x: this.player.x, y: this.player.y };
+      const user = {
+        username: username,
+        x: this.player.x,
+        y: this.player.y,
+        uid: this.uid,
+        direction: this.Player.direction,
+      };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
