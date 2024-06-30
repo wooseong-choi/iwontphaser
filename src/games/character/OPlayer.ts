@@ -77,51 +77,6 @@ class OPlayer implements iChara {
     x: number,
     y: number
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-    // const playerWorkDConfig = {
-    //   key: "walk_down",
-    //   frames: this.obj.anims.generateFrameNames("player", {
-    //     start: 0,
-    //     end: 3,
-    //     prefix: "frame_0_",
-    //   }),
-    //   frameRate: 10,
-    //   repeat: -1,
-    // };
-    // const playerWorkLConfig = {
-    //   key: "walk_left",
-    //   frames: this.obj.anims.generateFrameNames("player", {
-    //     start: 0,
-    //     end: 3,
-    //     prefix: "frame_1_",
-    //   }),
-    //   frameRate: 10,
-    //   repeat: -1,
-    // };
-    // const playerWorkRConfig = {
-    //   key: "walk_right",
-    //   frames: this.obj.anims.generateFrameNames("player", {
-    //     start: 0,
-    //     end: 3,
-    //     prefix: "frame_2_",
-    //   }),
-    //   frameRate: 10,
-    //   repeat: -1,
-    // };
-    // const playerWorkUConfig = {
-    //   key: "walk_up",
-    //   frames: this.obj.anims.generateFrameNames("player", {
-    //     start: 0,
-    //     end: 3,
-    //     prefix: "frame_3_",
-    //   }),
-    //   frameRate: 10,
-    //   repeat: -1,
-    // };
-
-    // this.obj.anims.create(playerWorkDConfig);
-    // this.obj.anims.create(playerWorkLConfig);
-    // this.obj.anims.create(playerWorkRConfig);
-    // this.obj.anims.create(playerWorkUConfig);
 
     this.player = this.obj.physics.add.sprite(x, y, "player");
     this.player.setCollideWorldBounds(true);
@@ -136,47 +91,47 @@ class OPlayer implements iChara {
    * @param cursor Keyboard Events
    */
   Move(cursor: Phaser.Types.Input.Keyboard.CursorKeys) {
-    const { left, right, up, down } = cursor;
+    // const { left, right, up, down } = cursor;
 
-    this.oldPosition = { x: this.player.x, y: this.player.y };
+    // this.oldPosition = { x: this.player.x, y: this.player.y };
 
-    let velocityX = 0;
-    let velocityY = 0;
-    let animationKey: string | null = null;
+    // let velocityX = 0;
+    // let velocityY = 0;
+    // let animationKey: string | null = null;
 
-    switch (true) {
-      case left.isDown:
-        velocityX = -this.speed;
-        velocityY = 0;
-        animationKey = "walk_left";
-        break;
-      case right.isDown:
-        velocityX = this.speed;
-        velocityY = 0;
-        animationKey = "walk_right";
-        break;
-      case up.isDown:
-        velocityY = -this.speed;
-        velocityX = 0;
-        animationKey = "walk_up";
-        break;
-      case down.isDown:
-        velocityY = this.speed;
-        velocityX = 0;
-        animationKey = "walk_down";
-        break;
-    }
+    // switch (true) {
+    //   case left.isDown:
+    //     velocityX = -this.speed;
+    //     velocityY = 0;
+    //     animationKey = "walk_left";
+    //     break;
+    //   case right.isDown:
+    //     velocityX = this.speed;
+    //     velocityY = 0;
+    //     animationKey = "walk_right";
+    //     break;
+    //   case up.isDown:
+    //     velocityY = -this.speed;
+    //     velocityX = 0;
+    //     animationKey = "walk_up";
+    //     break;
+    //   case down.isDown:
+    //     velocityY = this.speed;
+    //     velocityX = 0;
+    //     animationKey = "walk_down";
+    //     break;
+    // }
 
-    // Set player velocity based on key inputs
-    this.player.setVelocityX(velocityX);
-    this.player.setVelocityY(velocityY);
+    // // Set player velocity based on key inputs
+    // this.player.setVelocityX(velocityX);
+    // this.player.setVelocityY(velocityY);
 
-    // Play animation if key is pressed, otherwise pause
-    if (animationKey) {
-      this.player.play(animationKey, true);
-    } else {
-      this.player.anims.pause();
-    }
+    // // Play animation if key is pressed, otherwise pause
+    // if (animationKey) {
+    //   this.player.play(animationKey, true);
+    // } else {
+    //   this.player.anims.pause();
+    // }
   }
 
   /**

@@ -4,7 +4,6 @@ import GameApp from "../games/GameApp";
 import Bottom from "../components/Bottom.jsx";
 import List from "../components/List";
 import "./Main.css";
-import io from 'socket.io-client';
 
 
 const Main = ({isListOpen, setIsListOpen}) => {
