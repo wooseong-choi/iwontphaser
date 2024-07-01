@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import Header from "../components/Header";
 import ModalLogin from "../components/ModalLogin";
 import TextAnimation from "../components/TextAnimation";
@@ -28,7 +28,7 @@ const Login = () => {
         className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
       >
         <Header />
-        <TextAnimation />
+        {/* <TextAnimation /> */}
         <div>
           <button
             onClick={() => {

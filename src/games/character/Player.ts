@@ -6,6 +6,7 @@ interface iChara {
   width: number;
   height: number;
   speed: number;
+  direction: string;
   oldPosition: { x: number; y: number };
 
   Preload(
@@ -29,6 +30,7 @@ class Player implements iChara {
   width: number;
   height: number;
   speed: number;
+  direction: string;
   oldPosition: { x: number; y: number };
 
   /**
@@ -41,6 +43,7 @@ class Player implements iChara {
     this.obj = obj;
     this.width = width;
     this.height = height;
+    this.direction = "down";
     this.speed = 160;
   }
 
@@ -160,6 +163,7 @@ class Player implements iChara {
     this.player.setVelocityX(velocityX);
     this.player.setVelocityY(velocityY);
 
+    this.direction = animationKey || this.direction;
     // Play animation if key is pressed, otherwise pause
     if (animationKey) {
       this.player.play(animationKey, true);

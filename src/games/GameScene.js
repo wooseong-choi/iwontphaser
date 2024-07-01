@@ -15,7 +15,8 @@ class GameScene extends Phaser.Scene {
 
     this.socket = io("ws://localhost:3001");
     this.OPlayer = {};
-    this.uid = undefined;
+    this.temp_OPlayer = {};
+
     this.socket.on("connect", function (data) {
       console.log(data);
     });
@@ -60,22 +61,25 @@ class GameScene extends Phaser.Scene {
 
         // 유저 움직임 처리
         case "move":
-          for (let i = 0; i < data.users.length; i++) {
-            const user = data.users[i];
-            if (user.uid !== this.uid && this.OPlayer[user.uid]) {
-              this.OPlayer[user.uid].moveTo(user.x, user.y);
-//           const user_name = sessionStorage.getItem("username");
-//           const uid = this.socket.id;
-//           for (let i = 0; i < data.users.length; i++) {
-//             const user = data.users[i];
-//             if (user.uid !== uid) {
-//               for (let j = 0; j < this.OPlayer.length; j++) {
-//                 if (this.OPlayer[j].uid === user.uid) {
-//                   console.log("Move player: " + user.uid + " to " + user.x + ", " + user.y);
-//                   this.OPlayer[j].moveTo(user.x, user.y);
-//                   break;
-//                 }
-//               }
+          console.log(data);
+          const user = data.user;
+
+          // if (this.OPlayer[user.uid]) {
+          //   const otherPlayer = this.OPlayer[user.uid];
+          //   otherPlayer.moveTo(user.x, user.y, user.direction).then(() => {
+          //     otherPlayer.setMoving(false);
+          //     console.log(`Player ${user.uid} has arrived at the destination.`);
+          //   });
+          // }
+
+          // 움직인 유저 정보만 받아와서 갱신해주기
+          if (this.OPlayer[user.uid]) {
+            const otherPlayer = this.OPlayer[user.uid];
+            if (otherPlayer.x !== user.x || otherPlayer.y !== user.y) {
+              otherPlayer.moveTo(user.x, user.y, user.direction);
+              otherPlayer.setMoving(true);
+            } else {
+              otherPlayer.setMoving(false);
             }
           }
           break;
@@ -101,9 +105,12 @@ class GameScene extends Phaser.Scene {
                 64,
                 64
               );
-              this.OPlayer[userJson.uid].Create(userJson.x, userJson.y);
+              this.temp_OPlayer[userJson.uid] = userJson;
             }
           }
+          break;
+        default:
+          console.log("Error!: No msg event on Socket.");
           break;
       }
     });
@@ -168,6 +175,14 @@ class GameScene extends Phaser.Scene {
     layer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(this.player, layer);
 
+    // 다른 플레이어들 생성
+    for (let key in this.temp_OPlayer) {
+      const user = this.temp_OPlayer[key];
+      this.OPlayer[key].Create(user.x, user.y);
+    }
+    // 메모리 해제
+    // delete this.temp_OPlayer;
+
     // 장애물 생성
     this.obstacles = this.physics.add.group({
       key: "obstacle",
@@ -205,9 +220,29 @@ class GameScene extends Phaser.Scene {
    * @param {number} time 현재 시간
    * @param {number} delta 이전 프레임에서 현재 프레임까지의 시간 간격
    */
-  update() {
+  update(time, delta) {
     // 플레이어 이동
     this.Player.Move(this.cursors);
+
+    if (!this.lastPositionUpdateTime) {
+      this.lastPositionUpdateTime = time;
+    }
+
+    // if (time > this.lastPositionUpdateTime + 500) {
+    //   const username = sessionStorage.getItem("username");
+
+    //   const user = {
+    //     uid: this.socket.id,
+    //     username: username,
+    //     x: this.player.x,
+    //     y: this.player.y,
+    //     direction: this.Player.direction,
+    //   };
+    //   this.Player.oldPosition = { x: this.player.x, y: this.player.y };
+    //   this.socket.emit("move", user);
+
+    //   this.lastPositionUpdateTime = time;
+    // }
 
     // 플레이어가 이동했을 때만 서버에 위치 전송
     if (
@@ -223,6 +258,7 @@ class GameScene extends Phaser.Scene {
         username: username,
         x: this.player.x,
         y: this.player.y,
+        direction: this.Player.direction,
       };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
