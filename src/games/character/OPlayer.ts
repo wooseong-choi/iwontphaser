@@ -8,6 +8,7 @@ interface iChara {
   speed: number;
   name: string;
   oldPosition: { x: number; y: number };
+  uid: number;
 
   Preload(
     key: string,
@@ -33,6 +34,7 @@ class OPlayer implements iChara {
   speed: number;
   name: string;
   oldPosition: { x: number; y: number };
+  uid: number;
 
   /**
    * constructor of class Player
@@ -44,13 +46,15 @@ class OPlayer implements iChara {
     obj: globalThis.Phaser.Scene,
     name: string,
     width: number,
-    height: number
+    height: number,
+    uid: number
   ) {
     this.obj = obj;
     this.width = width;
     this.height = height;
     this.speed = 160;
     this.name = name;
+    this.uid = uid;
   }
 
   /**
