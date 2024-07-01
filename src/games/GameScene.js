@@ -40,22 +40,22 @@ class GameScene extends Phaser.Scene {
           // const newPlayer = new OPlayer(this, data.username, 64, 64);
           // newPlayer.Create(64, 64);
           // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
-//           const users = data.users;
-//           console.log(data.users);
-//           for (let i = 0; i < users.length; i++) {
-//             const userJson = users[i];
-//             console.log("New player connected: " + userJson.username);
-//             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
-//               if(this.uid === undefined){
-//                 this.uid = userJson.uid;
-//               }
-//               continue;
-//             }
+          //           const users = data.users;
+          //           console.log(data.users);
+          //           for (let i = 0; i < users.length; i++) {
+          //             const userJson = users[i];
+          //             console.log("New player connected: " + userJson.username);
+          //             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
+          //               if(this.uid === undefined){
+          //                 this.uid = userJson.uid;
+          //               }
+          //               continue;
+          //             }
 
-//             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
-//             newPlayer.Create(userJson.x, userJson.y);
-//             this.OPlayer.push(newPlayer);
-//           }
+          //             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+          //             newPlayer.Create(userJson.x, userJson.y);
+          //             this.OPlayer.push(newPlayer);
+          //           }
 
           break;
 
@@ -143,9 +143,12 @@ class GameScene extends Phaser.Scene {
   preload() {
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
-    this.load.tilemapCSV("first_map", "./map/test/test.csv");
-    this.load.image("tileset", "./gfx/Inner.png");
-    this.load.image("obstacle", "./gfx/7.png");
+    // this.load.tilemapCSV("first_map", "./map/test/test.csv");
+    this.load.tilemapTiledJSON("map", "./map/map.json");
+    // this.load.image("tileset", "./gfx/Inner.png");
+    // this.load.image("obstacle", "./gfx/7.png");
+    this.load.image("Classroom_A2", "./gfx/Classroom_A2.png");
+    this.load.image("Classroom_B", "./gfx/Classroom_B.png");
   }
 
   /**
@@ -159,21 +162,45 @@ class GameScene extends Phaser.Scene {
     });
 
     // 맵 생성
-    var map = this.make.tilemap({
-      key: "first_map",
-      tileWidth: 16,
-      tileHeight: 16,
-    });
-    var tileset = map.addTilesetImage("tileset");
-    var layer = map.createLayer(0, tileset, 0, 0);
+    var map = this.make.tilemap({ key: "map" });
+    var tilesClassroomA2 = map.addTilesetImage("Classroom_A2", "Classroom_A2");
+    var tilesClassroomB = map.addTilesetImage("Classroom_B", "Classroom_B");
+
+    // 레이어 생성
+    var backgroundLayer = map.createLayer(
+      "Tile Layer 1",
+      [tilesClassroomA2, tilesClassroomB],
+      0,
+      0
+    );
+    var objectLayer = map.createLayer(
+      "Object Layer 1",
+      [tilesClassroomA2, tilesClassroomB],
+      0,
+      0
+    );
+    var metaLayer = map.createLayer(
+      "Meta",
+      [tilesClassroomA2, tilesClassroomB],
+      0,
+      0
+    );
+    var areaLayer = map.createLayer(
+      "Area Layer 1",
+      [tilesClassroomA2, tilesClassroomB],
+      0,
+      0
+    );
+
+    // 충돌 레이어 설정
+    metaLayer.setCollisionByExclusion([-1]);
 
     // 플레이어 생성
     this.player = this.Player.Create(64, 64);
     this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
 
-    layer.setCollisionByProperty({ collides: true });
-    this.physics.add.collider(this.player, layer);
+    this.physics.add.collider(this.player, metaLayer);
 
     // 다른 플레이어들 생성
     for (let key in this.temp_OPlayer) {
