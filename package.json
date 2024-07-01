@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "@pixi/react": "^7.1.2",
+    "@react-oauth/google": "^0.12.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "gsap": "^3.12.5",
+    "jwt-decode": "^4.0.0",
     "phaser": "^3.80.1",
     "phaser3-rex-plugins": "^1.80.4",
     "pixi.js": "^8.2.0",
