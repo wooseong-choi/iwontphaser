@@ -33,3 +33,15 @@ body{
     min-height: 0px;
     position: relative;
 }
+.camchatDiv{
+    position: absolute;
+    width: 100%;
+    height: 30%;
+    opacity: 0.5;
+    z-index: 2;
+    background-color: red;
+    display: none;
+}
+.camchatDiv.active{
+    display: block;
+}
