@@ -15,6 +15,7 @@ class GameScene extends Phaser.Scene {
 
     this.socket = io("ws://localhost:3001");
     this.OPlayer = {};
+    this.temp_OPlayer = {};
 
     this.socket.on("connect", function (data) {
       console.log(data);
@@ -39,11 +40,27 @@ class GameScene extends Phaser.Scene {
 
         // 유저 움직임 처리
         case "move":
-          for (let i = 0; i < data.users.length; i++) {
-            const user = data.users[i];
-            if (user.uid !== this.uid && this.OPlayer[user.uid]) {
-              this.OPlayer[user.uid].moveTo(user.x, user.y);
+          console.log(data);
+          const user = data.user;
+
+          // 다다음 커밋시 이 주석 삭제
+          // 모든 유저 정보를 받아와서 갱신해줬던 코드
+          // for (let i = 0; i < data.users.length; i++) {
+          //   const user = data.users[i];
+          //   if (user.uid !== this.uid && this.OPlayer[user.uid]) {
+          //     this.OPlayer[user.uid].moveTo(user.x, user.y, user.direction);
+          //   }
+          // }
+          // 움직인 유저 정보만 받아와서 갱신해주기
+          if (this.OPlayer[user.uid]) {
+            const otherPlayer = this.OPlayer[user.uid];
+            if (otherPlayer.x !== user.x || otherPlayer.y !== user.y) {
+              otherPlayer.moveTo(user.x, user.y, user.direction);
+              otherPlayer.setMoving(true);
+            } else {
+              otherPlayer.setMoving(false);
             }
+            // this.OPlayer[user.uid].moveTo(user.x, user.y, user.direction);
           }
           break;
 
@@ -68,7 +85,8 @@ class GameScene extends Phaser.Scene {
                 64,
                 64
               );
-              this.OPlayer[userJson.uid].Create(userJson.x, userJson.y);
+              this.temp_OPlayer[userJson.uid] = userJson;
+              // this.OPlayer[userJson.uid].Create(userJson.x, userJson.y);
             }
           }
           break;
@@ -135,6 +153,12 @@ class GameScene extends Phaser.Scene {
     layer.setCollisionByProperty({ collides: true });
     this.physics.add.collider(this.player, layer);
 
+    // 다른 플레이어들 생성
+    for (let key in this.temp_OPlayer) {
+      const user = this.temp_OPlayer[key];
+      this.OPlayer[key].Create(user.x, user.y);
+    }
+
     // 장애물 생성
     this.obstacles = this.physics.add.group({
       key: "obstacle",
@@ -172,11 +196,31 @@ class GameScene extends Phaser.Scene {
    * @param {number} time 현재 시간
    * @param {number} delta 이전 프레임에서 현재 프레임까지의 시간 간격
    */
-  update() {
+  update(time, delta) {
     // 플레이어 이동
     this.Player.Move(this.cursors);
 
+    if (!this.lastPositionUpdateTime) {
+      this.lastPositionUpdateTime = time;
+    }
+
     // 플레이어가 이동했을 때만 서버에 위치 전송
+    // if (time > this.lastPositionUpdateTime + 500) {
+    //   const username = sessionStorage.getItem("username");
+
+    //   const user = {
+    //     uid: this.socket.id,
+    //     username: username,
+    //     x: this.player.x,
+    //     y: this.player.y,
+    //     direction: this.Player.direction,
+    //   };
+    //   this.Player.oldPosition = { x: this.player.x, y: this.player.y };
+    //   this.socket.emit("move", user);
+
+    //   this.lastPositionUpdateTime = time;
+    // }
+
     if (
       this.Player.oldPosition &&
       (this.player.x !== this.Player.oldPosition.x ||
@@ -189,10 +233,16 @@ class GameScene extends Phaser.Scene {
         username: username,
         x: this.player.x,
         y: this.player.y,
+        direction: this.Player.direction,
       };
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
+
+    // 다른 플레이어들 애니메이션 정지
+    // for (let key in this.OPlayer) {
+    //   this.OPlayer[key].player.anims.pause();
+    // }
 
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
