@@ -7,8 +7,10 @@ import OPlayer from "./character/OPlayer.ts";
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
-
-    this.uid = null;
+    this.Map_Height = 800;
+    this.Map_Width = 600;
+    this.Tile_Height = 16;
+    this.Tile_Width = 16;
 
     this.Player = new Player(this, 64, 64);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
@@ -23,43 +25,35 @@ class GameScene extends Phaser.Scene {
 
     this.socket.on("message", (data) => {
       // console.log(data);
-
       switch (data.type) {
-        // 채팅 메시지 처리
         case "message":
           console.log(data.message);
           break;
 
-        // 다른 유저들의 새로운 사람 처리
-        case "join":
+        case "newplayer":
           console.log("New player connected: " + data.uid);
-
-          this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
-          this.OPlayer[data.uid].Create(data.x, data.y);
-
           // const newPlayer = new OPlayer(this, data.username, 64, 64);
           // newPlayer.Create(64, 64);
           // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
-//           const users = data.users;
-//           console.log(data.users);
-//           for (let i = 0; i < users.length; i++) {
-//             const userJson = users[i];
-//             console.log("New player connected: " + userJson.username);
-//             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
-//               if(this.uid === undefined){
-//                 this.uid = userJson.uid;
-//               }
-//               continue;
-//             }
+          const users = data.users;
+          console.log(data.users);
+          for (let i = 0; i < users.length; i++) {
+            const userJson = users[i];
+            console.log("New player connected: " + userJson.username);
+            if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
+              if(this.uid === undefined){
+                this.uid = userJson.uid;
+              }
+              continue;
+            }
 
-//             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
-//             newPlayer.Create(userJson.x, userJson.y);
-//             this.OPlayer.push(newPlayer);
-//           }
+            const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+            newPlayer.Create(userJson.x, userJson.y);
+            this.OPlayer.push(newPlayer);
+          }
 
           break;
 
-        // 유저 움직임 처리
         case "move":
           console.log(data);
           const user = data.user;
@@ -83,17 +77,12 @@ class GameScene extends Phaser.Scene {
             }
           }
           break;
-
-        // 해당 유저 삭제
         case "leave":
+          // 해당 유저 삭제 코드
           console.log("Player disconnected: " + data.uid);
-          if (this.OPlayer[data.uid]) {
-            this.OPlayer[data.uid].Destroy();
-            delete this.OPlayer[data.uid];
-          }
+          this.OPlayer[data.uid].destroy();
+          delete this.OPlayer[data.uid];
           break;
-
-        // 유저 동기화
         case "syncUser":
           this.uid = data.uid;
           for (let i = 0; i < data.users.length; i++) {
@@ -116,20 +105,11 @@ class GameScene extends Phaser.Scene {
     });
 
     // 웹 소켓 끊겼을 때 발생 이벤트
-    this.socket.on("disconnecting", function () {
-      console.log("Socket.IO disconnected.");
-      this.socket.emit("leave", {
-        username: sessionStorage.getItem("username"),
-      });
-      sessionStorage.removeItem("username");
-    });
-
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
       this.socket.emit("leave", {
         username: sessionStorage.getItem("username"),
       });
-      sessionStorage.removeItem("username");
     });
 
     this.socket.on("error", function (error) {
@@ -137,9 +117,6 @@ class GameScene extends Phaser.Scene {
     });
   }
 
-  /**
-   * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
-   */
   preload() {
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
@@ -151,15 +128,23 @@ class GameScene extends Phaser.Scene {
     this.load.image("Classroom_B", "./gfx/Classroom_B.png");
   }
 
-  /**
-   * 게임이 시작될 때 실행되는 함수입니다.
-   * 게임에 필요한 객체들을 생성하고 초기화합니다.
-   */
   create() {
-    // 서버에 입장 메시지 전송
-    this.socket.emit("join", {
-      username: sessionStorage.getItem("username"),
-    });
+    // Create a static group for the tiles
+
+    // Add tiles from the tileset
+    // const tiles = this.physics.add.staticGroup();
+    // for (let i = 0; i < this.Map_Width; i += this.Tile_Width) {
+    //   for (let j = 0; j < this.Map_Height; j += this.Tile_Height) {
+    //     tiles.create(i, j, "background", "frame_1_0");
+    //   }
+    // }
+    console.log("정보: ", this.socket, this.socket.connected);
+    if (this.socket && this.socket.connected) {
+      this.socket.emit("join", {
+        username: sessionStorage.getItem("username"),
+      });
+      console.log("Join 실행");
+    }
 
     // 맵 생성
     var map = this.make.tilemap({ key: "map" });
@@ -209,10 +194,19 @@ class GameScene extends Phaser.Scene {
       this
     );
 
-    // 재시작 키 설정
     this.input.keyboard.on("keydown", (event) => {
       if (event.key === "r") {
         this.scene.restart();
+      }
+
+      if (event.key === "w") {
+        this.Player.moveTo(this.player.x, this.player.y - 16);
+      }
+      if (event.key === "a") {
+      }
+      if (event.key === "s") {
+      }
+      if (event.key === "d") {
       }
     });
 
@@ -270,7 +264,6 @@ class GameScene extends Phaser.Scene {
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
-
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
       console.log("'Q' 키가 눌렸습니다!");

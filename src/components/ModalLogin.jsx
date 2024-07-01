@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 import "./ModalLogin.css";
 
 
@@ -24,10 +25,29 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
+    const user = { 
+      id:username, 
+      name:username, 
+      pw:password, 
+      user_type: 'U'
+    };
+    axios.post('http://localhost:3333/user/login',{ user })
+    .then(response =>{
+        console.log(response);
+        if(response.data == null || response.data == '')
+            return alert("로그인이 실패하였습니다.");
 
-    sessionStorage.setItem("username", username);
+        sessionStorage.setItem("user",JSON.stringify(response.data));
+        sessionStorage.setItem("username", username);
+    
+        navigate("/main");
+    })
+    .catch(error=>{
+        console.error('Error fetching data:', error);
+        return alert("에러가 발생했습니다.");
+    });
 
-    navigate("/main");
+
   };
 
   if (!isOpen) {
@@ -66,7 +86,29 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                       const jwt = jwtDecode(token);
                       console.log(jwt);
                       const name = jwt.email;
-                      sessionStorage.setItem("username", name);
+                      const user = { 
+                        id:name, 
+                        name:name, 
+                        user_type: 'G'
+                      };
+                      axios.post('http://localhost:3333/user/login',{ user })
+                      .then(response =>{
+                          console.log(response);
+                          if(response.data == null || response.data == '')
+                              return alert("로그인이 실패하였습니다.");
+                  
+                          sessionStorage.setItem("user",JSON.stringify(response.data));
+                          sessionStorage.setItem("username", name);
+                      
+                          navigate("/main");
+                      })
+                      .catch(error=>{
+                          console.error('Error fetching data:', error);
+                          return alert("에러가 발생했습니다.");
+                      });
+                  
+
+
                       navigate("/main");
                     }}
                     onFailure={(response) => {
