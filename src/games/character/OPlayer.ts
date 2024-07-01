@@ -39,6 +39,8 @@ class OPlayer implements iChara {
   direction: string;
   uid: number;
   onMove: boolean;
+  targetX: number;
+  targetY: number;
 
   /**
    * constructor of class Player
@@ -103,6 +105,15 @@ class OPlayer implements iChara {
     // deprecated method
   }
 
+  setMoving(isMoving: boolean) {
+    this.onMove = isMoving;
+    if (!isMoving) {
+      this.player.anims.pause();
+    } else {
+      this.player.anims.resume();
+    }
+  }
+
   /**
    * Move the player to a specific coordinate.
    * @param x The x-coordinate to move to.
@@ -110,7 +121,6 @@ class OPlayer implements iChara {
    */
   async moveTo(x: number, y: number, direction: string) {
     // Calculate the distance to the target
-
     const dx = x - this.player.x;
     const dy = y - this.player.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -120,27 +130,24 @@ class OPlayer implements iChara {
     const duration = (distance / this.speed) * 1000; // speed is in pixels per second, so multiply by 1000 to get duration in milliseconds
 
     // Create a tween that updates the player's position
-    this.obj.tweens.add({
-      targets: this.player,
-      x: x,
-      y: y,
-      duration: duration,
-      ease: "Linear",
+    return new Promise<void>((resolve) => {
+      this.obj.tweens.add({
+        targets: this.player,
+        x: x,
+        y: y,
+        duration: duration,
+        ease: "Linear",
+        onComplete: () => {
+          this.onMove = false;
+          this.player.anims.pause();
+          resolve();
+        },
+      });
+
+      if (this.onMove) {
+        this.player.anims.play(`${direction}`, true);
+      }
     });
-
-    if (this.onMove) {
-      console.log(direction);
-      this.player.anims.play(`${direction}`, true);
-    }
-  }
-
-  setMoving(isMoving: boolean) {
-    this.onMove = isMoving;
-    if (!isMoving) {
-      this.player.anims.pause();
-    } else {
-      this.player.anims.resume();
-    }
   }
 
   // 플레이어의 위치를 블록 단위로 움직이게 하는 메서드

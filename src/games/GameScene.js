@@ -43,14 +43,14 @@ class GameScene extends Phaser.Scene {
           console.log(data);
           const user = data.user;
 
-          // 다다음 커밋시 이 주석 삭제
-          // 모든 유저 정보를 받아와서 갱신해줬던 코드
-          // for (let i = 0; i < data.users.length; i++) {
-          //   const user = data.users[i];
-          //   if (user.uid !== this.uid && this.OPlayer[user.uid]) {
-          //     this.OPlayer[user.uid].moveTo(user.x, user.y, user.direction);
-          //   }
+          // if (this.OPlayer[user.uid]) {
+          //   const otherPlayer = this.OPlayer[user.uid];
+          //   otherPlayer.moveTo(user.x, user.y, user.direction).then(() => {
+          //     otherPlayer.setMoving(false);
+          //     console.log(`Player ${user.uid} has arrived at the destination.`);
+          //   });
           // }
+
           // 움직인 유저 정보만 받아와서 갱신해주기
           if (this.OPlayer[user.uid]) {
             const otherPlayer = this.OPlayer[user.uid];
@@ -60,7 +60,6 @@ class GameScene extends Phaser.Scene {
             } else {
               otherPlayer.setMoving(false);
             }
-            // this.OPlayer[user.uid].moveTo(user.x, user.y, user.direction);
           }
           break;
 
@@ -86,9 +85,11 @@ class GameScene extends Phaser.Scene {
                 64
               );
               this.temp_OPlayer[userJson.uid] = userJson;
-              // this.OPlayer[userJson.uid].Create(userJson.x, userJson.y);
             }
           }
+          break;
+        default:
+          console.log("Error!: No msg event on Socket.");
           break;
       }
     });
@@ -158,6 +159,8 @@ class GameScene extends Phaser.Scene {
       const user = this.temp_OPlayer[key];
       this.OPlayer[key].Create(user.x, user.y);
     }
+    // 메모리 해제
+    // delete this.temp_OPlayer;
 
     // 장애물 생성
     this.obstacles = this.physics.add.group({
@@ -204,7 +207,6 @@ class GameScene extends Phaser.Scene {
       this.lastPositionUpdateTime = time;
     }
 
-    // 플레이어가 이동했을 때만 서버에 위치 전송
     // if (time > this.lastPositionUpdateTime + 500) {
     //   const username = sessionStorage.getItem("username");
 
@@ -221,6 +223,7 @@ class GameScene extends Phaser.Scene {
     //   this.lastPositionUpdateTime = time;
     // }
 
+    // 플레이어가 이동했을 때만 서버에 위치 전송
     if (
       this.Player.oldPosition &&
       (this.player.x !== this.Player.oldPosition.x ||
@@ -238,11 +241,6 @@ class GameScene extends Phaser.Scene {
       this.Player.oldPosition = { x: this.player.x, y: this.player.y };
       this.socket.emit("move", user);
     }
-
-    // 다른 플레이어들 애니메이션 정지
-    // for (let key in this.OPlayer) {
-    //   this.OPlayer[key].player.anims.pause();
-    // }
 
     // 'Q' 키가 눌렸을 때 실행할 코드
     if (Phaser.Input.Keyboard.JustDown(this.qKey)) {
