@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import "./ModalLogin.css";
+
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const clientId = '99709035135-lq4adkjjk5trck2eg2fsi3aagilljfmv.apps.googleusercontent.com';
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -51,6 +56,26 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                 value={password}
                 onChange={handlePasswordChange}
               ></input>
+              <div className="login-google">
+                <GoogleOAuthProvider clientId={clientId} >
+                  <GoogleLogin 
+                    onSuccess={(response) => {
+                      console.log("Google Login Success:", response);
+                      const token = response.credential;
+                      // 복호화 로직
+                      const jwt = jwtDecode(token);
+                      console.log(jwt);
+                      const name = jwt.email;
+                      sessionStorage.setItem("username", name);
+                      navigate("/main");
+                    }}
+                    onFailure={(response) => {
+                      console.log("Google Login Failure:", response);
+                    }}
+                    
+                  />
+                </GoogleOAuthProvider>
+              </div>
             </form>
           </div>
           <div className="footer">

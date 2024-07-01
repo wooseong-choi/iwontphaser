@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import Header from "../components/Header";
 import ModalLogin from "../components/ModalLogin";
 import TextAnimation from "../components/TextAnimation";
@@ -10,8 +10,6 @@ const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  
- 
 
   // const handleChange = (e) => {
   //   setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,8 +20,6 @@ const Login = () => {
 
     navigate("/main");
   };
-   
-
 
   return (
     <>
