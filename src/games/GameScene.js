@@ -36,6 +36,27 @@ class GameScene extends Phaser.Scene {
 
           this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
           this.OPlayer[data.uid].Create(data.x, data.y);
+
+          // const newPlayer = new OPlayer(this, data.username, 64, 64);
+          // newPlayer.Create(64, 64);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+//           const users = data.users;
+//           console.log(data.users);
+//           for (let i = 0; i < users.length; i++) {
+//             const userJson = users[i];
+//             console.log("New player connected: " + userJson.username);
+//             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
+//               if(this.uid === undefined){
+//                 this.uid = userJson.uid;
+//               }
+//               continue;
+//             }
+
+//             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+//             newPlayer.Create(userJson.x, userJson.y);
+//             this.OPlayer.push(newPlayer);
+//           }
+
           break;
 
         // 유저 움직임 처리
@@ -233,6 +254,7 @@ class GameScene extends Phaser.Scene {
 
       const user = {
         uid: this.socket.id,
+        clientid: this.socket.id,
         username: username,
         x: this.player.x,
         y: this.player.y,
