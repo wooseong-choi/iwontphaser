@@ -10,8 +10,6 @@ const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  
- 
 
   // const handleChange = (e) => {
   //   setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,8 +20,6 @@ const Login = () => {
 
     navigate("/main");
   };
-   
-
 
   return (
     <>
@@ -32,7 +28,7 @@ const Login = () => {
         className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
       >
         <Header />
-        {/* <TextAnimation /> */}
+        <TextAnimation />
         <div>
           <button
             onClick={() => {
