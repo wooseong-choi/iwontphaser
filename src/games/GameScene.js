@@ -15,7 +15,7 @@ class GameScene extends Phaser.Scene {
 
     this.socket = io("ws://localhost:3001");
     this.OPlayer = {};
-
+    this.uid = undefined;
     this.socket.on("connect", function (data) {
       console.log(data);
     });
@@ -35,6 +35,27 @@ class GameScene extends Phaser.Scene {
 
           this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
           this.OPlayer[data.uid].Create(data.x, data.y);
+
+          // const newPlayer = new OPlayer(this, data.username, 64, 64);
+          // newPlayer.Create(64, 64);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+//           const users = data.users;
+//           console.log(data.users);
+//           for (let i = 0; i < users.length; i++) {
+//             const userJson = users[i];
+//             console.log("New player connected: " + userJson.username);
+//             if(userJson.clientid === this.socket.id || userJson.uid === this.uid){
+//               if(this.uid === undefined){
+//                 this.uid = userJson.uid;
+//               }
+//               continue;
+//             }
+
+//             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+//             newPlayer.Create(userJson.x, userJson.y);
+//             this.OPlayer.push(newPlayer);
+//           }
+
           break;
 
         // 유저 움직임 처리
@@ -43,6 +64,18 @@ class GameScene extends Phaser.Scene {
             const user = data.users[i];
             if (user.uid !== this.uid && this.OPlayer[user.uid]) {
               this.OPlayer[user.uid].moveTo(user.x, user.y);
+//           const user_name = sessionStorage.getItem("username");
+//           const uid = this.socket.id;
+//           for (let i = 0; i < data.users.length; i++) {
+//             const user = data.users[i];
+//             if (user.uid !== uid) {
+//               for (let j = 0; j < this.OPlayer.length; j++) {
+//                 if (this.OPlayer[j].uid === user.uid) {
+//                   console.log("Move player: " + user.uid + " to " + user.x + ", " + user.y);
+//                   this.OPlayer[j].moveTo(user.x, user.y);
+//                   break;
+//                 }
+//               }
             }
           }
           break;
@@ -186,6 +219,7 @@ class GameScene extends Phaser.Scene {
 
       const user = {
         uid: this.socket.id,
+        clientid: this.socket.id,
         username: username,
         x: this.player.x,
         y: this.player.y,

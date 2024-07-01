@@ -81,7 +81,6 @@ class OPlayer implements iChara {
     x: number,
     y: number
   ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-
     this.player = this.obj.physics.add.sprite(x, y, "player");
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(this.width, this.height, true);
