@@ -49,7 +49,7 @@ class GameScene extends Phaser.Scene {
 
             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
             newPlayer.Create(userJson.x, userJson.y);
-            this.OPlayer.push(newPlayer);
+            this.OPlayer[userJson.uid] = newPlayer;
           }
 
           break;
