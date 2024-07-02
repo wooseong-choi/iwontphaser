@@ -10,13 +10,12 @@ const CHARACTER_HEIGHT = 32;
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
-
     this.uid = null;
 
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://localhost:3001");
+    this.socket = io("ws://192.168.0.96:3001");
     this.OPlayer = {};
     this.temp_OPlayer = {};
 

@@ -5,10 +5,12 @@ import io from "socket.io-client";
 import Header from "../components/Header";
 import ModalLogin from "../components/ModalLogin";
 import TextAnimation from "../components/TextAnimation";
+import ModalRegist from "../components/ModalRegist";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
   const [isOpen, setIsOpen] = useState(false);
+  const [isRegistOpen, setIsRegistOpen] = useState(false);
   const navigate = useNavigate();
 
   // const handleChange = (e) => {
@@ -40,7 +42,14 @@ const Login = () => {
           >
             Join to the World!
           </button>
+          <span 
+            onClick={()=>{
+              setIsRegistOpen(isRegistOpen === false ? true: false);
+            }}
+            style={{display:'block' ,cursor:'pointer',color:'white', width:'100%',textAlign:'center'}}
+          >회원가입</span>
           <ModalLogin isOpen={isOpen} onClose={() => setIsOpen(false)} />
+          <ModalRegist isRegistOpen={isRegistOpen} onClose={() => setIsRegistOpen(false)} />
         </div>
       </div>
     </>

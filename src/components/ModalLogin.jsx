@@ -31,22 +31,24 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
       pw:password, 
       user_type: 'U'
     };
-    axios.post('http://localhost:3333/user/login',{ user })
+    axios.post('http://192.168.0.96:3333/user/login',{ user })
     .then(response =>{
         console.log(response);
         if(response.data == null || response.data == '')
             return alert("로그인이 실패하였습니다.");
+        if(response.data.msg === 'Ok'){
+          sessionStorage.setItem("user",JSON.stringify(response.data));
+          sessionStorage.setItem("username", username);
+          navigate("/main");
+        }else{
+          alert(response.data.msg);
+        }
 
-        sessionStorage.setItem("user",JSON.stringify(response.data));
-        sessionStorage.setItem("username", username);
-    
       })
       .catch(error=>{
         console.error('Error fetching data:', error);
         return alert("에러가 발생했습니다.");
       });
-      
-      navigate("/main");
 
   };
 
@@ -91,7 +93,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                         name:name, 
                         user_type: 'G'
                       };
-                      axios.post('http://localhost:3333/user/login',{ user })
+                      axios.post('http://192.168.0.96:3333/user/login',{ user })
                       .then(response =>{
                           console.log(response);
                           if(response.data == null || response.data == '')
