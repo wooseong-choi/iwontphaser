@@ -7,7 +7,6 @@ import OPlayer from "./character/OPlayer.ts";
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
-
     this.uid = null;
 
     this.Player = new Player(this, 16, 16);
@@ -51,7 +50,6 @@ class GameScene extends Phaser.Scene {
           //               }
           //               continue;
           //             }
-
           //             const newPlayer = new OPlayer(this, userJson.username, 16, 16, userJson.uid);
           //             newPlayer.Create(userJson.x, userJson.y);
           //             this.OPlayer.push(newPlayer);
@@ -174,8 +172,6 @@ class GameScene extends Phaser.Scene {
     var tileLayer1 = map.createLayer("Tile Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
-    
-    
     // 플레이어 생성
     this.player = this.Player.Create(16, 16);
     this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
