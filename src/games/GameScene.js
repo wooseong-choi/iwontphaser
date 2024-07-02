@@ -179,10 +179,6 @@ class GameScene extends Phaser.Scene {
    * 게임이 시작될 때 실행되는 함수입니다.
    * 게임에 필요한 객체들을 생성하고 초기화합니다.
    */
-  /**
-   * 게임이 시작될 때 실행되는 함수입니다.
-   * 게임에 필요한 객체들을 생성하고 초기화합니다.
-   */
   create() {
     // 서버에 입장 메시지 전송
     this.socket.emit("join", {
@@ -220,12 +216,12 @@ class GameScene extends Phaser.Scene {
     // delete this.temp_OPlayer;
 
     // 장애물 생성
-    this.obstacles = this.physics.add.group({
-      key: "obstacle",
-      // repeat: 5,
-      setScale: { x: 0.1, y: 0.1 },
-      setXY: { x: 400, y: 300, stepX: 1 },
-    });
+    // this.obstacles = this.physics.add.group({
+    //   key: "obstacle",
+    //   // repeat: 5,
+    //   setScale: { x: 0.1, y: 0.1 },
+    //   setXY: { x: 400, y: 300, stepX: 1 },
+    // });
 
     // this.obstacles.setCollideWorldBounds(true);
 
