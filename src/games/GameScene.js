@@ -13,8 +13,6 @@ class GameScene extends Phaser.Scene {
 
     this.uid = null;
 
-    this.uid = null;
-
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
@@ -149,14 +147,6 @@ class GameScene extends Phaser.Scene {
       sessionStorage.removeItem("username");
     });
 
-    this.socket.on("disconnecting", function () {
-      console.log("Socket.IO disconnected.");
-      this.socket.emit("leave", {
-        username: sessionStorage.getItem("username"),
-      });
-      sessionStorage.removeItem("username");
-    });
-
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
       this.socket.emit("leave", {
@@ -201,6 +191,7 @@ class GameScene extends Phaser.Scene {
     this.socket.emit("join", {
       username: sessionStorage.getItem("username"),
     });
+    
     // 서버에 입장 메시지 전송
     this.socket.emit("join", {
       username: sessionStorage.getItem("username"),
