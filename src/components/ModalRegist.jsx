@@ -27,7 +27,7 @@ const ModalRegist = ({ isOpen, onClose, children }) => {
       pw:password, 
       user_type: 'U'
     };
-    axios.post('http://localhost:3333/user/create',{ user })
+    axios.post('http://192.168.0.96:3333/user/create',{ user })
     .then(response =>{
         console.log(response);
         if(response.data == null || response.data == '')
