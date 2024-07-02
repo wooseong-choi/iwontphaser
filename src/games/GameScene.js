@@ -19,6 +19,9 @@ class GameScene extends Phaser.Scene {
     this.OPlayer = {};
     this.temp_OPlayer = {};
 
+    this.x = 32;
+    this.y = 32;
+
     this.socket.on("connect", function (data) {
       console.log(data);
     });
@@ -38,14 +41,34 @@ class GameScene extends Phaser.Scene {
         case "join":
           console.log("New player connected: " + data);
 
-          this.OPlayer[data.uid] = new OPlayer(
-            this,
-            data.username,
-            CHARACTER_WIDTH,
-            CHARACTER_HEIGHT
-          );
-          this.OPlayer[data.uid].Create(data.x, data.y);
+          if( this.OPlayer[data.uid] !== undefined){
+            if(this.OPlayer[data.uid].clientid !== data.clientid){
+              this.OPlayer[data.uid].Destroy();
+              this.OPlayer[data.uid] = new OPlayer(
+                this,
+                data.username,
+                CHARACTER_WIDTH,
+                CHARACTER_HEIGHT,
+                data.clientid
+              );
+              this.OPlayer[data.uid].Create(data.x, data.y);
+            }else{
+              this.OPlayer[data.uid].clientid = data.clientid;
+              this.OPlayer[data.uid].x = data.x;
+              this.OPlayer[data.uid].y = data.y;
+            }
+          }else{
+            this.OPlayer[data.uid] = new OPlayer(
+              this,
+              data.username,
+              CHARACTER_WIDTH,
+              CHARACTER_HEIGHT,
+              data.clientid
+            );
+            this.OPlayer[data.uid].Create(data.x, data.y);
+          }
 
+          
           // const newPlayer = new OPlayer(this, data.username, 32, 32);
           // newPlayer.Create(32, 32);
           // this.OPlayer.push({  uid: data.uid, username: data.username, x: 32, y: 32  });
@@ -124,6 +147,12 @@ class GameScene extends Phaser.Scene {
                 CHARACTER_HEIGHT
               );
               this.temp_OPlayer[userJson.uid] = userJson;
+            }else{
+              // 자기 자신인 경우
+              this.x = userJson.x;
+              this.y = userJson.y;
+              this.player.x = userJson.x;
+              this.player.y = userJson.y;
             }
           }
           break;
@@ -203,7 +232,7 @@ class GameScene extends Phaser.Scene {
     var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     
     // 플레이어 생성
-    this.player = this.Player.Create(32, 32);
+    this.player = this.Player.Create(this.x, this.y);
     this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
     
