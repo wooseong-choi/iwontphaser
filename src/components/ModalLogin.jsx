@@ -40,13 +40,13 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
         sessionStorage.setItem("user",JSON.stringify(response.data));
         sessionStorage.setItem("username", username);
     
-        navigate("/main");
-    })
-    .catch(error=>{
+      })
+      .catch(error=>{
         console.error('Error fetching data:', error);
         return alert("에러가 발생했습니다.");
-    });
-
+      });
+      
+      navigate("/main");
 
   };
 

@@ -26,7 +26,9 @@ const Main = ({isListOpen, setIsListOpen}) => {
         <div id="GameApp" className="flex">
           <div id="canvas-parent" className="flex main">
             <div id="gameMain" className="game">
-              <div className="camchatDiv"></div>
+              <div className="camchatDiv">
+                
+              </div>
               <GameApp />
             </div>
             <div className={`lists ${isListOpen ? 'open' : ''}`}>
