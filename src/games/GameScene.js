@@ -4,8 +4,8 @@ import Scroll from "./scroll/scrollEventHandler.ts";
 import io from "socket.io-client";
 import OPlayer from "./character/OPlayer.ts";
 
-const CHARACTER_WIDTH = 64;
-const CHARACTER_HEIGHT = 64;
+const CHARACTER_WIDTH = 32;
+const CHARACTER_HEIGHT = 32;
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -51,9 +51,9 @@ class GameScene extends Phaser.Scene {
           );
           this.OPlayer[data.uid].Create(data.x, data.y);
 
-          // const newPlayer = new OPlayer(this, data.username, 64, 64);
-          // newPlayer.Create(64, 64);
-          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+          // const newPlayer = new OPlayer(this, data.username, 32, 32);
+          // newPlayer.Create(32, 32);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 32, y: 32  });
           //           const users = data.users;
           //           console.log(data.users);
           //           for (let i = 0; i < users.length; i++) {
@@ -66,7 +66,7 @@ class GameScene extends Phaser.Scene {
           //               continue;
           //             }
 
-          //             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+          //             const newPlayer = new OPlayer(this, userJson.username, 32, 32, userJson.uid);
           //             newPlayer.Create(userJson.x, userJson.y);
           //             this.OPlayer.push(newPlayer);
           //           }
@@ -221,8 +221,8 @@ class GameScene extends Phaser.Scene {
     
     
     // 플레이어 생성
-    this.player = this.Player.Create(16, 16);
-    this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
+    this.player = this.Player.Create(32, 32);
+    this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
     
     // 충돌 레이어, 플레이어와 충돌 설정
@@ -265,6 +265,35 @@ class GameScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+
+    this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      const cam = this.cameras.main;
+      const oldZoom = cam.zoom;
+      
+      // 플레이어 위치를 기준으로 계산
+      const playerX = this.player.x;
+      const playerY = this.player.y;
+  
+      // 줌 레벨 변경
+      const newZoom = Phaser.Math.Clamp(oldZoom - deltaY * 0.001, 1, 2);
+      if (newZoom === oldZoom) {
+          return;
+      }
+  
+      // 카메라 팔로우 일시 중지
+      cam.stopFollow();
+  
+      // 줌 적용
+      cam.setZoom(newZoom);
+      
+      // 플레이어 중심으로 카메라 이동
+      cam.centerOn(playerX, playerY);
+  
+      // 일정 시간 후 카메라 팔로우 재개
+      this.time.delayedCall(500, () => {
+          cam.startFollow(this.player, true, 0.05, 0.05);
+      });
+    });
   }
 
   /**
