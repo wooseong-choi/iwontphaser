@@ -7,10 +7,9 @@ import OPlayer from "./character/OPlayer.ts";
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
-
     this.uid = null;
 
-    this.Player = new Player(this, 64, 64);
+    this.Player = new Player(this, 16, 16);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
     this.socket = io("ws://localhost:3001");
@@ -34,12 +33,12 @@ class GameScene extends Phaser.Scene {
         case "join":
           console.log("New player connected: " + data.uid);
 
-          this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
+          this.OPlayer[data.uid] = new OPlayer(this, data.username, 16, 16);
           this.OPlayer[data.uid].Create(data.x, data.y);
 
-          // const newPlayer = new OPlayer(this, data.username, 64, 64);
-          // newPlayer.Create(64, 64);
-          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 64, y: 64  });
+          // const newPlayer = new OPlayer(this, data.username, 16, 16);
+          // newPlayer.Create(16, 16);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 16, y: 16  });
           //           const users = data.users;
           //           console.log(data.users);
           //           for (let i = 0; i < users.length; i++) {
@@ -51,8 +50,7 @@ class GameScene extends Phaser.Scene {
           //               }
           //               continue;
           //             }
-
-          //             const newPlayer = new OPlayer(this, userJson.username, 64, 64, userJson.uid);
+          //             const newPlayer = new OPlayer(this, userJson.username, 16, 16, userJson.uid);
           //             newPlayer.Create(userJson.x, userJson.y);
           //             this.OPlayer.push(newPlayer);
           //           }
@@ -102,8 +100,8 @@ class GameScene extends Phaser.Scene {
               this.OPlayer[userJson.uid] = new OPlayer(
                 this,
                 userJson.username,
-                64,
-                64
+                16,
+                16
               );
               this.temp_OPlayer[userJson.uid] = userJson;
             }
@@ -141,14 +139,15 @@ class GameScene extends Phaser.Scene {
    * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
    */
   preload() {
-    this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
     // this.load.tilemapCSV("first_map", "./map/test/test.csv");
-    this.load.tilemapTiledJSON("map", "./map/map.json");
-    // this.load.image("tileset", "./gfx/Inner.png");
     // this.load.image("obstacle", "./gfx/7.png");
+    this.Player.Preload("player", "./reddude.png", "./meta/move.json");
+    this.load.tilemapTiledJSON("map", "./map/map.json");
     this.load.image("Classroom_A2", "./gfx/Classroom_A2.png");
     this.load.image("Classroom_B", "./gfx/Classroom_B.png");
+    this.load.image("classroom_asset1", "./gfx/classroom_asset1.png");
+    this.load.image("Inner", "./gfx/Inner.png");
   }
 
   /**
@@ -165,41 +164,21 @@ class GameScene extends Phaser.Scene {
     var map = this.make.tilemap({ key: "map" });
     var tilesClassroomA2 = map.addTilesetImage("Classroom_A2", "Classroom_A2");
     var tilesClassroomB = map.addTilesetImage("Classroom_B", "Classroom_B");
+    var tilesclassroom_asset1 = map.addTilesetImage("classroom_asset1", "classroom_asset1");
+    var Inner = map.addTilesetImage("Inner", "Inner");
 
     // 레이어 생성
-    var backgroundLayer = map.createLayer(
-      "Tile Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var objectLayer = map.createLayer(
-      "Object Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var metaLayer = map.createLayer(
-      "Meta",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var areaLayer = map.createLayer(
-      "Area Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-
-    // 충돌 레이어 설정
-    metaLayer.setCollisionByExclusion([-1]);
-
+    var metaLayer = map.createLayer("Meta", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var tileLayer1 = map.createLayer("Tile Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     // 플레이어 생성
-    this.player = this.Player.Create(64, 64);
+    this.player = this.Player.Create(16, 16);
     this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
-
+    
+    // 충돌 레이어, 플레이어와 충돌 설정
+    metaLayer.setCollisionByExclusion([-1]);
     this.physics.add.collider(this.player, metaLayer);
 
     // 다른 플레이어들 생성
