@@ -36,17 +36,20 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
         console.log(response);
         if(response.data == null || response.data == '')
             return alert("로그인이 실패하였습니다.");
+        if(response.data.msg === 'Ok'){
+          sessionStorage.setItem("user",JSON.stringify(response.data));
+          sessionStorage.setItem("username", username);
 
-        sessionStorage.setItem("user",JSON.stringify(response.data));
-        sessionStorage.setItem("username", username);
-    
+          navigate("/main");
+        }else{
+          alert(response.data.msg);
+        }
       })
       .catch(error=>{
         console.error('Error fetching data:', error);
         return alert("에러가 발생했습니다.");
       });
       
-      navigate("/main");
 
   };
 

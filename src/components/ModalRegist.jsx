@@ -4,7 +4,7 @@ import axios from 'axios';
 import "./ModalLogin.css";
 
 
-const ModalRegist = ({ isOpen, onClose, children }) => {
+const ModalRegist = ({ isRegistOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -32,11 +32,14 @@ const ModalRegist = ({ isOpen, onClose, children }) => {
         console.log(response);
         if(response.data == null || response.data == '')
             return alert("회원가입이 실패하였습니다.");
-
-        sessionStorage.setItem("user",JSON.stringify(response.data));
-        sessionStorage.setItem("username", username);
-    
-        navigate("/main");
+        if(response.data.msg === 'Ok'){
+          sessionStorage.setItem("user",JSON.stringify(response.data));
+          sessionStorage.setItem("username", username);
+          
+          navigate("/main");
+        }else{
+          alert(response.data.msg);
+        }
     })
     .catch(error=>{
         console.error('Error fetching data:', error);
@@ -46,7 +49,7 @@ const ModalRegist = ({ isOpen, onClose, children }) => {
 
   };
 
-  if (!isOpen) {
+  if (!isRegistOpen) {
     return null;
   }
 
