@@ -36,9 +36,7 @@ class GameScene extends Phaser.Scene {
 
         // 다른 유저들의 새로운 사람 처리
         case "join":
-        // 다른 유저들의 새로운 사람 처리
-        case "join":
-          console.log("New player connected: " + data.uid);
+          console.log("New player connected: " + data);
 
           this.OPlayer[data.uid] = new OPlayer(
             this,
@@ -190,11 +188,6 @@ class GameScene extends Phaser.Scene {
     this.socket.emit("join", {
       username: sessionStorage.getItem("username"),
     });
-    
-    // 서버에 입장 메시지 전송
-    this.socket.emit("join", {
-      username: sessionStorage.getItem("username"),
-    });
 
     // 맵 생성
     var map = this.make.tilemap({ key: "map" });
@@ -325,7 +318,7 @@ class GameScene extends Phaser.Scene {
       const username = sessionStorage.getItem("username");
 
       const user = {
-        uid: this.socket.id,
+        uid: username,
         clientid: this.socket.id,
         username: username,
         x: this.player.x,
