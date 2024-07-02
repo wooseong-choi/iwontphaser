@@ -4,12 +4,15 @@ import Scroll from "./scroll/scrollEventHandler.ts";
 import io from "socket.io-client";
 import OPlayer from "./character/OPlayer.ts";
 
+const CHARACTER_WIDTH = 32;
+const CHARACTER_HEIGHT = 32;
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
     this.uid = null;
 
-    this.Player = new Player(this, 16, 16);
+    this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
     this.socket = io("ws://192.168.0.96:3001");
@@ -23,7 +26,9 @@ class GameScene extends Phaser.Scene {
     this.socket.on("message", (data) => {
       // console.log(data);
 
+
       switch (data.type) {
+        // 채팅 메시지 처리
         // 채팅 메시지 처리
         case "message":
           console.log(data.message);
@@ -31,14 +36,21 @@ class GameScene extends Phaser.Scene {
 
         // 다른 유저들의 새로운 사람 처리
         case "join":
+        // 다른 유저들의 새로운 사람 처리
+        case "join":
           console.log("New player connected: " + data.uid);
 
-          this.OPlayer[data.uid] = new OPlayer(this, data.username, 16, 16);
+          this.OPlayer[data.uid] = new OPlayer(
+            this,
+            data.username,
+            CHARACTER_WIDTH,
+            CHARACTER_HEIGHT
+          );
           this.OPlayer[data.uid].Create(data.x, data.y);
 
-          // const newPlayer = new OPlayer(this, data.username, 16, 16);
-          // newPlayer.Create(16, 16);
-          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 16, y: 16  });
+          // const newPlayer = new OPlayer(this, data.username, 32, 32);
+          // newPlayer.Create(32, 32);
+          // this.OPlayer.push({  uid: data.uid, username: data.username, x: 32, y: 32  });
           //           const users = data.users;
           //           console.log(data.users);
           //           for (let i = 0; i < users.length; i++) {
@@ -50,13 +62,15 @@ class GameScene extends Phaser.Scene {
           //               }
           //               continue;
           //             }
-          //             const newPlayer = new OPlayer(this, userJson.username, 16, 16, userJson.uid);
+
+          //             const newPlayer = new OPlayer(this, userJson.username, 32, 32, userJson.uid);
           //             newPlayer.Create(userJson.x, userJson.y);
           //             this.OPlayer.push(newPlayer);
           //           }
 
           break;
 
+        // 유저 움직임 처리
         // 유저 움직임 처리
         case "move":
           console.log(data);
@@ -83,13 +97,21 @@ class GameScene extends Phaser.Scene {
           break;
 
         // 해당 유저 삭제
+
+        // 해당 유저 삭제
         case "leave":
           console.log("Player disconnected: " + data.uid);
           if (this.OPlayer[data.uid]) {
             this.OPlayer[data.uid].Destroy();
             delete this.OPlayer[data.uid];
           }
+          if (this.OPlayer[data.uid]) {
+            this.OPlayer[data.uid].Destroy();
+            delete this.OPlayer[data.uid];
+          }
           break;
+
+        // 유저 동기화
 
         // 유저 동기화
         case "syncUser":
@@ -100,13 +122,15 @@ class GameScene extends Phaser.Scene {
               this.OPlayer[userJson.uid] = new OPlayer(
                 this,
                 userJson.username,
-                16,
-                16
+                CHARACTER_WIDTH,
+                CHARACTER_HEIGHT
               );
               this.temp_OPlayer[userJson.uid] = userJson;
             }
           }
           break;
+
+        // 기타 이벤트 처리
         default:
           console.log("Error!: No msg event on Socket.");
           break;
@@ -138,6 +162,9 @@ class GameScene extends Phaser.Scene {
   /**
    * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
    */
+  /**
+   * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
+   */
   preload() {
     // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
     // this.load.tilemapCSV("first_map", "./map/test/test.csv");
@@ -154,7 +181,16 @@ class GameScene extends Phaser.Scene {
    * 게임이 시작될 때 실행되는 함수입니다.
    * 게임에 필요한 객체들을 생성하고 초기화합니다.
    */
+  /**
+   * 게임이 시작될 때 실행되는 함수입니다.
+   * 게임에 필요한 객체들을 생성하고 초기화합니다.
+   */
   create() {
+    // 서버에 입장 메시지 전송
+    this.socket.emit("join", {
+      username: sessionStorage.getItem("username"),
+    });
+    
     // 서버에 입장 메시지 전송
     this.socket.emit("join", {
       username: sessionStorage.getItem("username"),
@@ -172,9 +208,10 @@ class GameScene extends Phaser.Scene {
     var tileLayer1 = map.createLayer("Tile Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    
     // 플레이어 생성
-    this.player = this.Player.Create(16, 16);
-    this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
+    this.player = this.Player.Create(32, 32);
+    this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
     
     // 충돌 레이어, 플레이어와 충돌 설정
@@ -217,6 +254,35 @@ class GameScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+
+    this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      const cam = this.cameras.main;
+      const oldZoom = cam.zoom;
+      
+      // 플레이어 위치를 기준으로 계산
+      const playerX = this.player.x;
+      const playerY = this.player.y;
+  
+      // 줌 레벨 변경
+      const newZoom = Phaser.Math.Clamp(oldZoom - deltaY * 0.001, 1, 2);
+      if (newZoom === oldZoom) {
+          return;
+      }
+  
+      // 카메라 팔로우 일시 중지
+      cam.stopFollow();
+  
+      // 줌 적용
+      cam.setZoom(newZoom);
+      
+      // 플레이어 중심으로 카메라 이동
+      cam.centerOn(playerX, playerY);
+  
+      // 일정 시간 후 카메라 팔로우 재개
+      this.time.delayedCall(500, () => {
+          cam.startFollow(this.player, true, 0.05, 0.05);
+      });
+    });
   }
 
   /**
