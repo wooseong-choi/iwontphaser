@@ -13,6 +13,8 @@ class GameScene extends Phaser.Scene {
 
     this.uid = null;
 
+    this.uid = null;
+
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
@@ -27,12 +29,16 @@ class GameScene extends Phaser.Scene {
     this.socket.on("message", (data) => {
       // console.log(data);
 
+
       switch (data.type) {
+        // 채팅 메시지 처리
         // 채팅 메시지 처리
         case "message":
           console.log(data.message);
           break;
 
+        // 다른 유저들의 새로운 사람 처리
+        case "join":
         // 다른 유저들의 새로운 사람 처리
         case "join":
           console.log("New player connected: " + data.uid);
@@ -68,6 +74,7 @@ class GameScene extends Phaser.Scene {
           break;
 
         // 유저 움직임 처리
+        // 유저 움직임 처리
         case "move":
           console.log(data);
           const user = data.user;
@@ -93,13 +100,21 @@ class GameScene extends Phaser.Scene {
           break;
 
         // 해당 유저 삭제
+
+        // 해당 유저 삭제
         case "leave":
           console.log("Player disconnected: " + data.uid);
           if (this.OPlayer[data.uid]) {
             this.OPlayer[data.uid].Destroy();
             delete this.OPlayer[data.uid];
           }
+          if (this.OPlayer[data.uid]) {
+            this.OPlayer[data.uid].Destroy();
+            delete this.OPlayer[data.uid];
+          }
           break;
+
+        // 유저 동기화
 
         // 유저 동기화
         case "syncUser":
@@ -134,6 +149,14 @@ class GameScene extends Phaser.Scene {
       sessionStorage.removeItem("username");
     });
 
+    this.socket.on("disconnecting", function () {
+      console.log("Socket.IO disconnected.");
+      this.socket.emit("leave", {
+        username: sessionStorage.getItem("username"),
+      });
+      sessionStorage.removeItem("username");
+    });
+
     this.socket.on("disconnect", function () {
       console.log("Socket.IO disconnected.");
       this.socket.emit("leave", {
@@ -150,17 +173,25 @@ class GameScene extends Phaser.Scene {
   /**
    * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
    */
+  /**
+   * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
+   */
   preload() {
-    this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
     // this.load.tilemapCSV("first_map", "./map/test/test.csv");
-    this.load.tilemapTiledJSON("map", "./map/map.json");
-    // this.load.image("tileset", "./gfx/Inner.png");
     // this.load.image("obstacle", "./gfx/7.png");
+    this.Player.Preload("player", "./reddude.png", "./meta/move.json");
+    this.load.tilemapTiledJSON("map", "./map/map.json");
     this.load.image("Classroom_A2", "./gfx/Classroom_A2.png");
     this.load.image("Classroom_B", "./gfx/Classroom_B.png");
+    this.load.image("classroom_asset1", "./gfx/classroom_asset1.png");
+    this.load.image("Inner", "./gfx/Inner.png");
   }
 
+  /**
+   * 게임이 시작될 때 실행되는 함수입니다.
+   * 게임에 필요한 객체들을 생성하고 초기화합니다.
+   */
   /**
    * 게임이 시작될 때 실행되는 함수입니다.
    * 게임에 필요한 객체들을 생성하고 초기화합니다.
@@ -170,46 +201,32 @@ class GameScene extends Phaser.Scene {
     this.socket.emit("join", {
       username: sessionStorage.getItem("username"),
     });
+    // 서버에 입장 메시지 전송
+    this.socket.emit("join", {
+      username: sessionStorage.getItem("username"),
+    });
 
     // 맵 생성
     var map = this.make.tilemap({ key: "map" });
     var tilesClassroomA2 = map.addTilesetImage("Classroom_A2", "Classroom_A2");
     var tilesClassroomB = map.addTilesetImage("Classroom_B", "Classroom_B");
+    var tilesclassroom_asset1 = map.addTilesetImage("classroom_asset1", "classroom_asset1");
+    var Inner = map.addTilesetImage("Inner", "Inner");
 
     // 레이어 생성
-    var backgroundLayer = map.createLayer(
-      "Tile Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var objectLayer = map.createLayer(
-      "Object Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var metaLayer = map.createLayer(
-      "Meta",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-    var areaLayer = map.createLayer(
-      "Area Layer 1",
-      [tilesClassroomA2, tilesClassroomB],
-      0,
-      0
-    );
-
-    // 충돌 레이어 설정
-    metaLayer.setCollisionByExclusion([-1]);
-
+    var metaLayer = map.createLayer("Meta", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var tileLayer1 = map.createLayer("Tile Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
+    
+    
     // 플레이어 생성
-    this.player = this.Player.Create(64, 64);
+    this.player = this.Player.Create(16, 16);
     this.cameras.main.startFollow(this.player); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
-
+    
+    // 충돌 레이어, 플레이어와 충돌 설정
+    metaLayer.setCollisionByExclusion([-1]);
     this.physics.add.collider(this.player, metaLayer);
 
     // 다른 플레이어들 생성
