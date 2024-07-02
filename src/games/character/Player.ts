@@ -32,7 +32,7 @@ class Player implements iChara {
   speed: number;
   direction: string;
   oldPosition: { x: number; y: number };
-
+  client_id: string;
   /**
    * constructor of class Player
    * @param obj Game Object of Phaser
