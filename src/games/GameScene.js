@@ -249,12 +249,12 @@ class GameScene extends Phaser.Scene {
     // delete this.temp_OPlayer;
 
     // 장애물 생성
-    this.obstacles = this.physics.add.group({
-      key: "obstacle",
-      // repeat: 5,
-      setScale: { x: 0.1, y: 0.1 },
-      setXY: { x: 400, y: 300, stepX: 1 },
-    });
+    // this.obstacles = this.physics.add.group({
+    //   key: "obstacle",
+    //   // repeat: 5,
+    //   setScale: { x: 0.1, y: 0.1 },
+    //   setXY: { x: 400, y: 300, stepX: 1 },
+    // });
 
     // this.obstacles.setCollideWorldBounds(true);
 
