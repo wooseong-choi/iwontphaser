@@ -219,7 +219,6 @@ class GameScene extends Phaser.Scene {
     var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
     
-    
     // 플레이어 생성
     this.player = this.Player.Create(32, 32);
     this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
