@@ -4,13 +4,16 @@ import Scroll from "./scroll/scrollEventHandler.ts";
 import io from "socket.io-client";
 import OPlayer from "./character/OPlayer.ts";
 
+const CHARACTER_WIDTH = 64;
+const CHARACTER_HEIGHT = 64;
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super();
 
     this.uid = null;
 
-    this.Player = new Player(this, 64, 64);
+    this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
     this.socket = io("ws://localhost:3001");
@@ -34,7 +37,12 @@ class GameScene extends Phaser.Scene {
         case "join":
           console.log("New player connected: " + data.uid);
 
-          this.OPlayer[data.uid] = new OPlayer(this, data.username, 64, 64);
+          this.OPlayer[data.uid] = new OPlayer(
+            this,
+            data.username,
+            CHARACTER_WIDTH,
+            CHARACTER_HEIGHT
+          );
           this.OPlayer[data.uid].Create(data.x, data.y);
 
           // const newPlayer = new OPlayer(this, data.username, 64, 64);
@@ -102,13 +110,15 @@ class GameScene extends Phaser.Scene {
               this.OPlayer[userJson.uid] = new OPlayer(
                 this,
                 userJson.username,
-                64,
-                64
+                CHARACTER_WIDTH,
+                CHARACTER_HEIGHT
               );
               this.temp_OPlayer[userJson.uid] = userJson;
             }
           }
           break;
+
+        // 기타 이벤트 처리
         default:
           console.log("Error!: No msg event on Socket.");
           break;
