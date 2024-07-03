@@ -158,7 +158,7 @@ class Player implements iChara {
       velocityX *= factor;
       velocityY *= factor;
     }
-  
+    
     this.player.setVelocity(velocityX, velocityY);
   
     if (animationKey) {
