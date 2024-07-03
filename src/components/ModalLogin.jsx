@@ -31,7 +31,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
       pw:password, 
       user_type: 'U'
     };
-    axios.post('http://192.168.0.96:3333/user/login',{ user })
+    axios.post('http://localhost:3333/user/login',{ user })
     .then(response =>{
         console.log(response);
         if(response.data == null || response.data == '')
@@ -91,7 +91,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                         name:name, 
                         user_type: 'G'
                       };
-                      axios.post('http://192.168.0.96:3333/user/login',{ user })
+                      axios.post('http://localhost:3333/user/login',{ user })
                       .then(response =>{
                           console.log(response);
                           if(response.data == null || response.data == '')

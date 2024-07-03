@@ -15,7 +15,7 @@ class GameScene extends Phaser.Scene {
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://192.168.0.96:3001");
+    this.socket = io("ws://localhost:3001");
     this.OPlayer = {};
     this.temp_OPlayer = {};
 
@@ -229,7 +229,7 @@ class GameScene extends Phaser.Scene {
     
     // 플레이어 생성
     this.player = this.Player.Create(this.x, this.y);
-    this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
+    this.cameras.main.startFollow(this.player, true, 0.5, 0.5); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
     
     // 충돌 레이어, 플레이어와 충돌 설정
