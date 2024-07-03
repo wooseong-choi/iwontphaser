@@ -15,7 +15,11 @@ class GameScene extends Phaser.Scene {
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://localhost:3001");
+    this.socket = io("ws://192.168.0.96:3001", {
+      extraHeaders: {
+        Authorization: "Bearer " + sessionStorage.getItem("user"),
+      }
+    });
     this.OPlayer = {};
     this.temp_OPlayer = {};
 
@@ -181,13 +185,7 @@ class GameScene extends Phaser.Scene {
   /**
    * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
    */
-  /**
-   * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
-   */
   preload() {
-    // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
-    // this.load.tilemapCSV("first_map", "./map/test/test.csv");
-    // this.load.image("obstacle", "./gfx/7.png");
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     this.load.tilemapTiledJSON("map", "./map/map.json");
     this.load.image("Classroom_A2", "./gfx/Classroom_A2.png");
@@ -196,10 +194,6 @@ class GameScene extends Phaser.Scene {
     this.load.image("Inner", "./gfx/Inner.png");
   }
 
-  /**
-   * 게임이 시작될 때 실행되는 함수입니다.
-   * 게임에 필요한 객체들을 생성하고 초기화합니다.
-   */
   /**
    * 게임이 시작될 때 실행되는 함수입니다.
    * 게임에 필요한 객체들을 생성하고 초기화합니다.
@@ -248,7 +242,7 @@ class GameScene extends Phaser.Scene {
 
     // 플레이어 생성
     this.player = this.Player.Create(this.x, this.y);
-    this.cameras.main.startFollow(this.player, true, 0.05, 0.05); // 카메라가 플레이어를 따라다니도록 설정
+    this.cameras.main.startFollow(this.player, true, 0.5, 0.5); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
 
     // 충돌 레이어, 플레이어와 충돌 설정
