@@ -1,26 +1,13 @@
 // src/pages/Login.jsx
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import Header from "../components/Header";
 import ModalLogin from "../components/ModalLogin";
 import TextAnimation from "../components/TextAnimation";
 import ModalRegist from "../components/ModalRegist";
 
 const Login = () => {
-  const [form, setForm] = useState({ username: "", password: "" });
   const [isOpen, setIsOpen] = useState(false);
   const [isRegistOpen, setIsRegistOpen] = useState(false);
-  const navigate = useNavigate();
-
-  // const handleChange = (e) => {
-  //   setForm({ ...form, [e.target.name]: e.target.value });
-  // };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    navigate("/main");
-  };
 
   return (
     <>
