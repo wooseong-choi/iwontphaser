@@ -1,7 +1,6 @@
 // src/pages/Login.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
 import Header from "../components/Header";
 import ModalLogin from "../components/ModalLogin";
 import TextAnimation from "../components/TextAnimation";
@@ -36,20 +35,30 @@ const Login = () => {
             onClick={() => {
               // Open the login modal
               setIsOpen(isOpen === false ? true : false);
-              console.log(`isOpen: ${isOpen}`);
             }}
             className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gree-600"
           >
             Join to the World!
           </button>
-          <span 
-            onClick={()=>{
-              setIsRegistOpen(isRegistOpen === false ? true: false);
+          <span
+            onClick={() => {
+              setIsRegistOpen(isRegistOpen === false ? true : false);
             }}
-            style={{display:'block' ,cursor:'pointer',color:'white', width:'100%',textAlign:'center'}}
-          >회원가입</span>
+            style={{
+              display: "block",
+              cursor: "pointer",
+              color: "white",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            회원가입
+          </span>
           <ModalLogin isOpen={isOpen} onClose={() => setIsOpen(false)} />
-          <ModalRegist isRegistOpen={isRegistOpen} onClose={() => setIsRegistOpen(false)} />
+          <ModalRegist
+            isRegistOpen={isRegistOpen}
+            onClose={() => setIsRegistOpen(false)}
+          />
         </div>
       </div>
     </>
