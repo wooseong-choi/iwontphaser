@@ -133,8 +133,6 @@ class GameScene extends Phaser.Scene {
           break;
 
         // 유저 동기화
-
-        // 유저 동기화
         case "syncUser":
           this.uid = data.uid;
           for (let i = 0; i < data.users.length; i++) {
@@ -189,13 +187,7 @@ class GameScene extends Phaser.Scene {
   /**
    * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
    */
-  /**
-   * 게임 시작 전에 필요한 리소스를 미리 로드합니다.
-   */
   preload() {
-    // this.OPlayer.Preload("oplayer", "./reddude.png", "./meta/move.json");
-    // this.load.tilemapCSV("first_map", "./map/test/test.csv");
-    // this.load.image("obstacle", "./gfx/7.png");
     this.Player.Preload("player", "./reddude.png", "./meta/move.json");
     this.load.tilemapTiledJSON("map", "./map/map.json");
     this.load.image("Classroom_A2", "./gfx/Classroom_A2.png");
