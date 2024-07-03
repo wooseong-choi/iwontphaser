@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
+  baseURL: "https://jsonplaceholder.typicode.com",  // Change this to Backend API URL
   timeout: 1000,
   Headers: {
     "Content-Type": "application/json",
@@ -23,5 +23,7 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+
 
 export default instance;

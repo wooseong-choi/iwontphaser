@@ -11,6 +11,7 @@
     "axios": "^1.7.2",
     "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
+    "livekit-client": "^2.3.1",
     "phaser": "^3.80.1",
     "phaser3-rex-plugins": "^1.80.4",
     "pixi.js": "^8.2.0",

@@ -23,8 +23,8 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
 
   const handleLogin = () => {
     // Perform login logic here
-    console.log("Username:", username);
-    console.log("Password:", password);
+    // console.log("Username:", username);
+    // console.log("Password:", password);
     const user = { 
       id:username, 
       name:username, 
@@ -43,13 +43,11 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
         }else{
           alert(response.data.msg);
         }
-
       })
       .catch(error=>{
         console.error('Error fetching data:', error);
         return alert("에러가 발생했습니다.");
       });
-
   };
 
   if (!isOpen) {
@@ -108,9 +106,6 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                           console.error('Error fetching data:', error);
                           return alert("에러가 발생했습니다.");
                       });
-                  
-
-
                       navigate("/main");
                     }}
                     onFailure={(response) => {
