@@ -10,8 +10,8 @@ const GameApp = () => {
     if (!window.game) {
       const config = {
         type: Phaser.CANVAS,
-        width: 1280,
-        height: 960,
+        width: 960,
+        height: 800,
         scene: GameScene,
         backgroundColor: "#2d2d2d",
         parent: "gameMain",

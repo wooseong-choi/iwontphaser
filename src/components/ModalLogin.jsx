@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-import axios from 'axios';
+import axios from "axios";
+import GLogin from "./GLogin";
 import "./ModalLogin.css";
-
+import { login } from "../api/login";
+import { setCookie } from "./Cookies.ts";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const clientId = '99709035135-lq4adkjjk5trck2eg2fsi3aagilljfmv.apps.googleusercontent.com';
+  const clientId =
+    "99709035135-lq4adkjjk5trck2eg2fsi3aagilljfmv.apps.googleusercontent.com";
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -25,27 +26,54 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     // console.log("Username:", username);
     // console.log("Password:", password);
-    const user = { 
-      id:username, 
-      name:username, 
-      pw:password, 
-      user_type: 'U'
+    const user = {
+      id: username,
+      name: username,
+      pw: password,
+      user_type: "U",
     };
-    axios.post('http://localhost:3333/user/login',{ user })
-    .then(response =>{
+    // login(user).then((response) => {
+    //   console.log(response);
+    //   if (response.data == null || response.data == "")
+    //     return alert("로그인이 실패하였습니다.");
+    //   if (response.data.msg === "Ok") {
+    //     sessionStorage.setItem("user", JSON.stringify(response.data));
+    //     sessionStorage.setItem("username", username);
+    //     navigate("/main");
+    //   } else {
+    //     alert(response.data.msg);
+    //   }
+    // });
+    axios
+      .post("http://localhost:3333/user/login", { user })
+      .then((response) => {
         console.log(response);
         if(response.data == null || response.data == '')
             return alert("로그인이 실패하였습니다.");
         if(response.data.msg === 'Ok'){
-          sessionStorage.setItem("user",JSON.stringify(response.data));
+          
+          if(response.data.jwt){
+
+            const option = {
+              Path:'/',
+              HttpOnly:true,
+              SameSite:'None',
+              Secure:true,
+              expires: new Date(new Date().getTime() + (60*60*1000*24*14))
+            };
+            
+            setCookie('refresh_token',response.data.jwt,option);
+          }
+          console.log( jwtDecode(response.data.jwt) );
+          sessionStorage.setItem("user",response.data.jwt);
           sessionStorage.setItem("username", username);
           navigate("/main");
-        }else{
+        } else {
           alert(response.data.msg);
         }
       })
-      .catch(error=>{
-        console.error('Error fetching data:', error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
         return alert("에러가 발생했습니다.");
       });
   };
@@ -77,43 +105,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                 onChange={handlePasswordChange}
               ></input>
               <div className="login-google">
-                <GoogleOAuthProvider clientId={clientId} >
-                  <GoogleLogin 
-                    onSuccess={(response) => {
-                      console.log("Google Login Success:", response);
-                      const token = response.credential;
-                      // 복호화 로직
-                      const jwt = jwtDecode(token);
-                      console.log(jwt);
-                      const name = jwt.email;
-                      const user = { 
-                        id:name, 
-                        name:name, 
-                        user_type: 'G'
-                      };
-                      axios.post('http://localhost:3333/user/login',{ user })
-                      .then(response =>{
-                          console.log(response);
-                          if(response.data == null || response.data == '')
-                              return alert("로그인이 실패하였습니다.");
-                  
-                          sessionStorage.setItem("user",JSON.stringify(response.data));
-                          sessionStorage.setItem("username", name);
-                      
-                          navigate("/main");
-                      })
-                      .catch(error=>{
-                          console.error('Error fetching data:', error);
-                          return alert("에러가 발생했습니다.");
-                      });
-                      navigate("/main");
-                    }}
-                    onFailure={(response) => {
-                      console.log("Google Login Failure:", response);
-                    }}
-                    
-                  />
-                </GoogleOAuthProvider>
+                <GLogin />
               </div>
             </form>
           </div>
