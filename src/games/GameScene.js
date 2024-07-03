@@ -33,9 +33,7 @@ class GameScene extends Phaser.Scene {
     this.socket.on("message", (data) => {
       // console.log(data);
 
-
       switch (data.type) {
-        // 채팅 메시지 처리
         // 채팅 메시지 처리
         case "message":
           console.log(data.message);
@@ -45,8 +43,8 @@ class GameScene extends Phaser.Scene {
         case "join":
           console.log("New player connected: " + data);
 
-          if( this.OPlayer[data.uid] !== undefined){
-            if(this.OPlayer[data.uid].clientid !== data.clientid){
+          if (this.OPlayer[data.uid] !== undefined) {
+            if (this.OPlayer[data.uid].clientid !== data.clientid) {
               this.OPlayer[data.uid].Destroy();
               this.OPlayer[data.uid] = new OPlayer(
                 this,
@@ -56,12 +54,12 @@ class GameScene extends Phaser.Scene {
                 data.clientid
               );
               this.OPlayer[data.uid].Create(data.x, data.y);
-            }else{
+            } else {
               this.OPlayer[data.uid].clientid = data.clientid;
               this.OPlayer[data.uid].x = data.x;
               this.OPlayer[data.uid].y = data.y;
             }
-          }else{
+          } else {
             this.OPlayer[data.uid] = new OPlayer(
               this,
               data.username,
@@ -72,7 +70,6 @@ class GameScene extends Phaser.Scene {
             this.OPlayer[data.uid].Create(data.x, data.y);
           }
 
-          
           // const newPlayer = new OPlayer(this, data.username, 32, 32);
           // newPlayer.Create(32, 32);
           // this.OPlayer.push({  uid: data.uid, username: data.username, x: 32, y: 32  });
@@ -95,7 +92,6 @@ class GameScene extends Phaser.Scene {
 
           break;
 
-        // 유저 움직임 처리
         // 유저 움직임 처리
         case "move":
           console.log(data);
@@ -120,8 +116,6 @@ class GameScene extends Phaser.Scene {
             }
           }
           break;
-
-        // 해당 유저 삭제
 
         // 해당 유저 삭제
         case "leave":
@@ -149,7 +143,7 @@ class GameScene extends Phaser.Scene {
                 CHARACTER_HEIGHT
               );
               this.temp_OPlayer[userJson.uid] = userJson;
-            }else{
+            } else {
               // 자기 자신인 경우
               this.x = userJson.x;
               this.y = userJson.y;
@@ -214,20 +208,43 @@ class GameScene extends Phaser.Scene {
     var map = this.make.tilemap({ key: "map" });
     var tilesClassroomA2 = map.addTilesetImage("Classroom_A2", "Classroom_A2");
     var tilesClassroomB = map.addTilesetImage("Classroom_B", "Classroom_B");
-    var tilesclassroom_asset1 = map.addTilesetImage("classroom_asset1", "classroom_asset1");
+    var tilesclassroom_asset1 = map.addTilesetImage(
+      "classroom_asset1",
+      "classroom_asset1"
+    );
     var Inner = map.addTilesetImage("Inner", "Inner");
 
     // 레이어 생성
-    var metaLayer = map.createLayer("Meta", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
-    var tileLayer1 = map.createLayer("Tile Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
-    var areaLayer1 = map.createLayer("Area Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
-    var objectLayer1 = map.createLayer("Object Layer 1", [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner], 0, 0);
-    
+    var metaLayer = map.createLayer(
+      "Meta",
+      [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner],
+      0,
+      0
+    );
+    var tileLayer1 = map.createLayer(
+      "Tile Layer 1",
+      [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner],
+      0,
+      0
+    );
+    var areaLayer1 = map.createLayer(
+      "Area Layer 1",
+      [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner],
+      0,
+      0
+    );
+    var objectLayer1 = map.createLayer(
+      "Object Layer 1",
+      [tilesClassroomA2, tilesClassroomB, tilesclassroom_asset1, Inner],
+      0,
+      0
+    );
+
     // 플레이어 생성
     this.player = this.Player.Create(this.x, this.y);
     this.cameras.main.startFollow(this.player, true, 0.5, 0.5); // 카메라가 플레이어를 따라다니도록 설정
     this.scoll.create(this, this.Map_Width, this.Map_Height);
-    
+
     // 충돌 레이어, 플레이어와 충돌 설정
     metaLayer.setCollisionByExclusion([-1]);
     this.physics.add.collider(this.player, metaLayer);
@@ -269,32 +286,32 @@ class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.qKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
 
-    this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+    this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
       const cam = this.cameras.main;
       const oldZoom = cam.zoom;
-      
+
       // 플레이어 위치를 기준으로 계산
       const playerX = this.player.x;
       const playerY = this.player.y;
-  
+
       // 줌 레벨 변경
       const newZoom = Phaser.Math.Clamp(oldZoom - deltaY * 0.001, 1, 2);
       if (newZoom === oldZoom) {
-          return;
+        return;
       }
-  
+
       // 카메라 팔로우 일시 중지
       cam.stopFollow();
-  
+
       // 줌 적용
       cam.setZoom(newZoom);
-      
+
       // 플레이어 중심으로 카메라 이동
       cam.centerOn(playerX, playerY);
-  
+
       // 일정 시간 후 카메라 팔로우 재개
       this.time.delayedCall(500, () => {
-          cam.startFollow(this.player, true, 0.05, 0.05);
+        cam.startFollow(this.player, true, 0.05, 0.05);
       });
     });
   }
@@ -356,6 +373,18 @@ class GameScene extends Phaser.Scene {
       // 여기에 원하는 코드를 추가하세요.
       this.Player.moveTo(400, 300);
       // this.Player.moveToBlock(400, 300);
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+      console.log("Space key is pressed!");
+      window.dispatchEvent(
+        new CustomEvent("start-video", {
+          detail: {
+            uid: this.uid,
+            unsername: this.username,
+          },
+        })
+      );
     }
   }
 
