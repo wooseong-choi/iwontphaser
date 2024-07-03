@@ -4,7 +4,7 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 import "./ModalLogin.css";
-
+import { setCookie } from "./Cookies.ts";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
@@ -31,13 +31,27 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
       pw:password, 
       user_type: 'U'
     };
-    axios.post('http://localhost:3333/user/login',{ user })
+    axios.post('http://192.168.0.96:3333/user/login',{ user })
     .then(response =>{
         console.log(response);
         if(response.data == null || response.data == '')
             return alert("로그인이 실패하였습니다.");
         if(response.data.msg === 'Ok'){
-          sessionStorage.setItem("user",JSON.stringify(response.data));
+          
+          if(response.data.jwt){
+
+            const option = {
+              Path:'/',
+              HttpOnly:true,
+              SameSite:'None',
+              Secure:true,
+              expires: new Date(new Date().getTime() + (60*60*1000*24*14))
+            };
+            
+            setCookie('refresh_token',response.data.jwt,option);
+          }
+          console.log( jwtDecode(response.data.jwt) );
+          sessionStorage.setItem("user",response.data.jwt);
           sessionStorage.setItem("username", username);
           navigate("/main");
         }else{
@@ -91,7 +105,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
                         name:name, 
                         user_type: 'G'
                       };
-                      axios.post('http://localhost:3333/user/login',{ user })
+                      axios.post('http://192.168.0.96:3333/user/login',{ user })
                       .then(response =>{
                           console.log(response);
                           if(response.data == null || response.data == '')

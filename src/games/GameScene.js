@@ -15,7 +15,11 @@ class GameScene extends Phaser.Scene {
     this.Player = new Player(this, CHARACTER_WIDTH, CHARACTER_HEIGHT);
     this.scoll = new Scroll(this, this.Map_Width, this.Map_Height, this.Player);
 
-    this.socket = io("ws://localhost:3001");
+    this.socket = io("ws://192.168.0.96:3001", {
+      extraHeaders: {
+        Authorization: "Bearer " + sessionStorage.getItem("user"),
+      }
+    });
     this.OPlayer = {};
     this.temp_OPlayer = {};
 
