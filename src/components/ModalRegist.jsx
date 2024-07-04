@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import "./ModalLogin.css";
+import { jwtDecode } from "jwt-decode";
 
-
-const ModalRegist = ({ isOpen, onClose, children }) => {
+const ModalRegist = ({ isRegistOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -21,32 +21,34 @@ const ModalRegist = ({ isOpen, onClose, children }) => {
     // Perform login logic here
     console.log("Username:", username);
     console.log("Password:", password);
-    const user = { 
-      id:username, 
-      name:username, 
-      pw:password, 
-      user_type: 'U'
+    const user = {
+      id: username,
+      name: username,
+      pw: password,
+      user_type: "U",
     };
-    axios.post('http://localhost:3333/user/create',{ user })
-    .then(response =>{
+    axios
+      .post("http://192.168.0.96:3333/user/create", { user })
+      .then((response) => {
         console.log(response);
-        if(response.data == null || response.data == '')
-            return alert("회원가입이 실패하였습니다.");
+        if (response.data == null || response.data == "")
+          return alert("회원가입이 실패하였습니다.");
+        if (response.data.msg === "Ok") {
+          sessionStorage.setItem("user", JSON.stringify(response.data));
+          sessionStorage.setItem("username", username);
 
-        sessionStorage.setItem("user",JSON.stringify(response.data));
-        sessionStorage.setItem("username", username);
-    
-        navigate("/main");
-    })
-    .catch(error=>{
-        console.error('Error fetching data:', error);
+          navigate("/main");
+        } else {
+          alert(response.data.msg);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
         return alert("에러가 발생했습니다.");
-    });
-
-
+      });
   };
 
-  if (!isOpen) {
+  if (!isRegistOpen) {
     return null;
   }
 

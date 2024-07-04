@@ -41,7 +41,7 @@ class OPlayer implements iChara {
   onMove: boolean;
   targetX: number;
   targetY: number;
-
+  client_id: string;
   /**
    * constructor of class Player
    * @param obj Game Object of Phaser
@@ -53,7 +53,8 @@ class OPlayer implements iChara {
     name: string,
     width: number,
     height: number,
-    uid: number
+    uid: number,
+    client_id: string
   ) {
     this.obj = obj;
     this.width = width;
@@ -63,6 +64,7 @@ class OPlayer implements iChara {
     this.direction = "down";
     this.uid = uid;
     this.onMove = false;
+    this.client_id = client_id;
   }
 
   /**

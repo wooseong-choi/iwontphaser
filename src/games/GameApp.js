@@ -10,8 +10,8 @@ const GameApp = () => {
     if (!window.game) {
       const config = {
         type: Phaser.CANVAS,
-        width: 2400,
-        height: 1600,
+        width: 960,
+        height: 800,
         scene: GameScene,
         backgroundColor: "#2d2d2d",
         parent: "gameMain",
@@ -22,11 +22,20 @@ const GameApp = () => {
           arcade: {
             gravity: { y: 0, x: 0 },
             debug: true,
-            fps: 30,
+            fps: 60,
           },
         },
       };
       window.game = new Phaser.Game(config);
+    }
+
+    // 우클릭 이벤트 방지
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.oncontextmenu = (e) => {
+        e.preventDefault();
+        return false;
+      };
     }
 
     // 컴포넌트 언마운트 시 Phaser 게임 정리
