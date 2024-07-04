@@ -5,6 +5,7 @@ import GLogin from "./GLogin";
 import "./ModalLogin.css";
 import { login } from "../api/login";
 import { setCookie } from "./Cookies.ts";
+import { jwtDecode } from "jwt-decode";
 
 const ModalLogin = ({ isOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
@@ -45,7 +46,7 @@ const ModalLogin = ({ isOpen, onClose, children }) => {
     //   }
     // });
     axios
-      .post("http://localhost:3333/user/login", { user })
+      .post("http://192.168.0.96:3333/user/login", { user })
       .then((response) => {
         console.log(response);
         if(response.data == null || response.data == '')

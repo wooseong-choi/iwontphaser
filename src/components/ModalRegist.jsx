@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ModalLogin.css";
+import { jwtDecode } from "jwt-decode";
 
 const ModalRegist = ({ isRegistOpen, onClose, children }) => {
   const [username, setUsername] = useState("");
@@ -27,7 +28,7 @@ const ModalRegist = ({ isRegistOpen, onClose, children }) => {
       user_type: "U",
     };
     axios
-      .post("http://localhost:3333/user/create", { user })
+      .post("http://192.168.0.96:3333/user/create", { user })
       .then((response) => {
         console.log(response);
         if (response.data == null || response.data == "")
